@@ -1,0 +1,166 @@
+{#{% if is_paginated %}#}
+    <div class="row">
+        <div class="col-sm-3">
+            <div class="dataTables_info text-center" id="editable_info" role="status" aria-live="polite">
+            <select name="paginate_by" id="paginate_by" class="form-control" style="width:70px;font-size:10px;">
+                {% if limit == '10' %}
+                    <option value="10" selected>10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="75">75</option>
+                    <option value="100">100</option>
+                {% elif limit == '20' %}
+                    <option value="10">10</option>
+                    <option value="20" selected>20</option>
+                    <option value="50">50</option>
+                    <option value="75">75</option>
+                    <option value="100">100</option>
+                {% elif limit == '50' %}
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50" selected>50</option>
+                    <option value="75">75</option>
+                    <option value="100">100</option>
+                {% elif limit == '75' %}
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="75" selected>75</option>
+                    <option value="100">100</option>
+                {% elif limit == '100' %}
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                    <option value="75">75</option>
+                    <option value="100" selected>100</option>
+                {% else %}
+                    <option value="10">10</option>
+                    <option value="20" selected>20</option>
+                    <option value="50">50</option>
+                    <option value="75" >75</option>
+                    <option value="100">100</option>
+                {% endif %}
+            </select>
+                <!--显示第 {{ page_obj.start_index }} 至 {{ page_obj.end_index }} 项结果，共 {{ paginator.count }} 项-->
+            </div>
+        </div>
+        <div class="col-sm-9">
+            <div class="dataTables_paginate paging_simple_numbers" id="editable_paginate">
+                <ul class="pagination" style="margin-top: 0; float: right">
+                    {% if page_obj.has_previous %}
+                        <li class="paginate_button" aria-controls="editable" tabindex="0" id="first-page">
+                            <a data-page="next" href="?page=1">‹‹</a>
+                        </li>
+                        <li class="paginate_button previous" aria-controls="editable" tabindex="0" id="previous">
+                            <a data-page="next" href="?page={{ page_obj.previous_page_number }}">‹</a>
+                        </li>
+                    {% endif %}
+
+                    {% for page in paginator.num_pages|pagination_range:page_obj.number %}
+                        {% if page == page_obj.number %}
+                            <li class="paginate_button active" aria-controls="editable" tabindex="0">
+                                <a class="page" title="第{{ page }}页">{{ page }}</a>
+                        {% else %}
+                            <li class="paginate_button" aria-controls="editable" tabindex="0">
+                                <a class="page" href="?page={{ page }}" title="第{{ page }}页">{{ page }}</a>
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}
+                        <li class="paginate_button next" aria-controls="editable" tabindex="0" id="next">
+                            <a data-page="next" href="?page={{ page_obj.next_page_number }}">›</a>
+                        </li>
+                        <li class="paginate_button" aria-controls="editable" tabindex="0" id="last-page">
+                            <a data-page="next" >››</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+{#{% endif %}#}
+
+<script>
+
+    $(document).ready(function () {
+        $('.page').click(function () {
+            var searchStr = location.search;
+            var old_href = $(this).attr('href').replace('?', '');
+            var searchArray = searchStr.split('&');
+            var limit = $("#paginate_by").val()
+            if (searchStr == '') {
+                searchStr = '?paginate_by='+ limit + '&page=1'
+            }
+
+            if (searchStr.indexOf('page') >= 0) {
+                searchArray.pop();
+            }
+
+            searchArray.push(old_href);
+            if (searchArray.length > 1) {
+                $(this).attr('href', searchArray.join('&'));
+            }
+            {#paginationForAll()#}
+        })
+
+        paginationForAll()
+
+        function paginationForAll() {
+            if(window.location.search){
+                var currHref = window.location.search.split("?")[1]
+                var query = currHref.split('&')
+                var obj = {}
+                for(var a=0; a<query.length; a++){
+                    var nameval = query[a].split("=")
+                    obj[nameval[0]] = nameval[1]
+                }
+
+                if(obj["paginate_by"]){
+                    var limit = obj["paginate_by"]
+                    $("#paginate_by").val(limit)
+                }
+                console.log("MMM  ",{{ page_obj.number }})
+                var hreflimit = $("#paginate_by").val()
+                var curpage = $("#editable_paginate li.paginate_button.active").text().trim()
+
+                if(curpage != 1){
+                    console.log("hreflimit      ",hreflimit)
+                    var prev = parseInt(curpage) -1
+                    var prevhref = "?paginate_by="+hreflimit + "&page=" + prev;
+                    $("#previous a").attr("href",prevhref);
+                }
+                if($("#next").html()){
+                    var next = parseInt(curpage) +1
+                    var nexthref = "?paginate_by="+hreflimit + "&page=" + next;
+                    $("#next a").attr("href",nexthref);
+                    console.log(">>>>>>>>>>>>>>>>>>>>>>",$("#next").html())
+                }
+    {#            if($("#last-page")){#}
+    {#                var next = {{ page_obj.next_page_number }};#}
+    {#                next = "?paginate_by="+hreflimit + "&page=" + next#}
+    {#                $(".paginate_button.next a").attr("href",next);#}
+    {#            }#}
+
+            }
+            var hreflimit = $("#paginate_by").val()
+            var first = "?paginate_by="+hreflimit + "&page=1"
+            var total = {{ paginator.num_pages }}
+    {#        console.log(total, hreflimit)#}
+            var last = "?paginate_by="+hreflimit + "&page="+ total
+            if($("#first-page a")){
+               $("#first-page a").attr("href", first)
+            }
+            if($("#last-page a")){
+               $("#last-page a").attr("href",last);
+            }
+
+        }
+
+
+
+
+    });
+
+</script>

@@ -1,0 +1,91 @@
+{% extends 'common/basic_layout.html' %}
+{% block content %}
+    <script src="/static/hplus/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script src="/static/hplus/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+{#    <script src="/static/hplus/js/plugins/echarts/echarts-all.js"></script>#}
+    <script src="/static/hplus/js/plugins/echarts/echarts.js"></script>
+    <style>
+        .fixed-table-loading {
+            display: none !important;
+        }
+
+    .highcharts-title {
+        font-size: 12px !important;
+    }
+
+    .decription-tooltip {
+        padding: 5px;
+{#        padding-bottom: 5px;#}
+        position: absolute;
+        background-color: #f1f1f1;
+        border: 1px solid;
+        border-radius: 5px;
+        margin-top: -17px;
+    }
+
+    .decription-tooltip-first {
+        height: 0;
+        width: 0;
+        margin-left: -21px !important;
+        position: absolute;
+        border-top: 5px solid transparent;
+        border-left: 5px solid transparent;
+        border-right: 11px solid #f1f1f1 ;
+        border-bottom:5px solid transparent !important;
+        margin-top: 1px;
+    }
+
+    .decription-tooltip-line {
+        height: 0;
+        width: 0;
+        margin-left: -24px !important;
+        position: absolute;
+        border-top: 6px solid transparent;
+        border-left: 6px solid transparent;
+        border-right: 12px solid #797979 ;
+        border-bottom:6px solid transparent !important;
+    }
+
+    decription-tooltip div {
+        border-bottom: 1px solid;
+    }
+
+    .ibox-title h5 {
+        font-size: 12px !important;
+    }
+
+    .ibox-title {
+        padding-top: 8px !important;
+        min-height: 36px !important;
+    }
+
+    .ibox-content {
+        padding-top: 0px !important;
+        padding-bottom: 5px !important;
+    }
+
+    .bootstrap-table {
+        font-size: 10px !important;
+    }
+
+    .pagination {
+        margin: 0px !important;
+    }
+
+    .fixed-table-body {
+        height: 250px;
+    }
+
+    #triggers-table.table > tbody > tr > td,
+    #triggers-table.table > tbody > tr > th,
+    #triggers-table.table > tfoot > tr > td,
+    #triggers-table.table > tfoot > tr > th,
+    #triggers-table.table > thead > tr > td,
+    #triggers-table.table > thead > tr > th {
+        padding: 12px !important;
+    }
+
+    </style>
+    <div>欢迎登陆东方星空数据科技运维平台</div>
+    <p>这家伙很懒，首页还没开始写。。。。</p>
+{% endblock %}

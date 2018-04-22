@@ -1,0 +1,16 @@
+{% extends 'common/basic_form.html' %}
+{% block titleblock %}
+    用户
+{% endblock %}
+{% block script_content %}
+    <script>
+        $(document).ready(function () {
+            $('#id_is_active').removeClass('form-control')
+            $('#id_is_staff').removeClass('form-control')
+            $('#id_is_superuser').removeClass('form-control')
+            $('#id_date_joined').attr('readonly', 'readonly')
+            $('#id_last_login').attr('readonly', 'readonly')
+
+        });
+    </script>
+{% endblock %}

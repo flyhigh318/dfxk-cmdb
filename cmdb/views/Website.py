@@ -1,0 +1,97 @@
+# -*- coding: utf-8 -*-
+# @Time    : 2018/4/19 14:43
+# @Author  : Abner
+# @Email   : tangrongwen@dfxkdata.com
+# @File    : Website.py
+# @Software: PyCharm
+
+from braces.views import *
+from django.contrib.auth.mixins import *
+from django.urls import *
+from django.views.generic import *
+
+from cmdb.forms.WebsiteForm import WebsiteForm, WebsiteListFilterForm
+from cmdb.models.Website import Website
+from cobra_main.settings import PER_PAGE
+from django.db.models import Q
+
+
+listview_lazy_url = 'cmdb:website_list'
+listview_template = 'cmdb/website_list.html'
+formview_template = 'cmdb/website_form.html'
+
+
+class WebsiteView(LoginRequiredMixin, OrderableListMixin, ListView):
+    model = Website
+    paginate_by = PER_PAGE
+    template_name = listview_template
+    context_object_name = 'result_list'
+    orderable_columns_default = 'id'
+    orderable_columns = ['name', 'create_time', 'update_time']
+
+
+    def get_queryset(self):
+        result_list = Website.objects.all()
+        search = self.request.GET.get('search')
+        order_by = self.request.GET.get('order_by')
+        ordering = self.request.GET.get('ordering')
+        if search:
+            result_list = Website.objects.filter(Q(name__icontains=search)|
+                                                 Q(use__icontains=search)|
+                                                 Q(user__icontains=search)|
+                                                 Q(password__icontains=search)|
+                                                 Q(comment__icontains=search))
+        if order_by:
+            if ordering == 'desc':
+                result_list = result_list.order_by('-' + order_by)
+            else:
+                result_list = result_list.order_by(order_by)
+
+        return result_list
+
+    def get_context_data(self, **kwargs):
+        context = super(WebsiteView, self).get_context_data(**kwargs)
+        context['order_by'] = self.request.GET.get('order_by', '')
+        context['ordering'] = self.request.GET.get('ordering', 'asc')
+        context['filter_form'] = WebsiteListFilterForm(self.request.GET)
+        return context
+
+
+class WebsiteCreateView(LoginRequiredMixin, CreateView):
+    model = Website
+    form_class = WebsiteForm
+    paginate_by = PER_PAGE
+    template_name = formview_template
+    success_url = reverse_lazy(listview_lazy_url)
+
+    def get_success_url(self):
+        return super(WebsiteCreateView, self).get_success_url()
+
+class WebsiteUpdateView(LoginRequiredMixin, UpdateView):
+    model = Website
+    form_class = WebsiteForm
+    template_name = formview_template
+    success_url = reverse_lazy(listview_lazy_url)
+    context_object_name = 'entity'
+
+    def get_context_data(self, **kwargs):
+        context = super(WebsiteUpdateView, self).get_context_data(**kwargs)
+        context['is_add'] = False
+        return context
+
+
+
+class WebsiteDeleteView(LoginRequiredMixin, JSONResponseMixin,
+                     AjaxResponseMixin, View):
+    def get_ajax(self, request, *args, **kwargs):
+        ids = request.GET.get('id', '')
+        if ids != "":
+            list_id = ids.split(',')
+            for id in list_id:
+                old_data = []
+                pl = Website.objects.filter(id=id)
+
+            Website.objects.filter(pk__in=map(int, ids.split(','))).delete()
+            return self.render_json_response({"success": True})
+        else:
+            return self.render_json_response({"success": False})
