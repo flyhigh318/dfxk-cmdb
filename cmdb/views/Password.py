@@ -12,10 +12,8 @@ from django.views.generic import *
 
 from cmdb.forms.PasswordForm import PasswordForm, PasswordListFilterForm
 from cmdb.models.Password import Password
-from cmdb.models.Asset import Assets
 from django.db.models import Q
 from cobra_main.settings import PER_PAGE
-import re
 
 
 listview_lazy_url = 'cmdb:password_list'
@@ -39,18 +37,11 @@ class PasswordView(LoginRequiredMixin, OrderableListMixin, ListView):
         ordering = self.request.GET.get('ordering')
 
         if search:
-            if re.search(r'\d+\.\d+.*|\d{1,3}.*', search):
-                asset_id = []
-                result_asset_list = Assets.objects.filter(Q(intral_ip__icontains=search) |
-                                                          Q(internet_ip__icontains=search))
-                for obj in result_asset_list:
-                    asset_id.append(obj.id)
-                result_list = Password.objects.filter(ip_id__in=asset_id)
-            else:
-                result_list = Password.objects.filter(Q(comment__icontains=search)|
-                                                      Q(port__icontains=search)|
-                                                      Q(user__icontains=search))
-
+            result_list = Password.objects.filter(Q(comment__icontains=search)|
+                                                  Q(ip__intral_ip__icontains=search)|
+                                                  Q(ip__internet_ip__icontains=search)|
+                                                  Q(port__icontains=search)|
+                                                  Q(user__icontains=search))
         if order_by:
             if ordering == 'desc':
                 result_list = result_list.order_by('-' + order_by)

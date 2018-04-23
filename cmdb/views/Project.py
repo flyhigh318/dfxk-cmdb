@@ -14,14 +14,10 @@ from cmdb.forms.ProjectForm import ProjectForm, ProjectListFilterForm
 from cmdb.models.Project import Project
 from cobra_main.settings import PER_PAGE
 from django.db.models import Q
-import re
-from cmdb.models.Asset import Assets
-
 
 listview_lazy_url = 'cmdb:project_list'
 listview_template = 'cmdb/project_list.html'
 formview_template = 'cmdb/project_form.html'
-
 
 class ProjectView(LoginRequiredMixin, OrderableListMixin, ListView):
     model = Project
@@ -31,7 +27,6 @@ class ProjectView(LoginRequiredMixin, OrderableListMixin, ListView):
     orderable_columns_default = 'id'
     orderable_columns = ['name', 'create_time', 'update_time']
 
-
     def get_queryset(self):
         result_list = Project.objects.all()
         search = self.request.GET.get('name')
@@ -39,21 +34,11 @@ class ProjectView(LoginRequiredMixin, OrderableListMixin, ListView):
         ordering = self.request.GET.get('ordering')
 
         if search:
-            if re.search(r'\d+\.\d+.*|\d{1,3}.*', search):
-                asset_id = []
-                result_asset_list = Assets.objects.filter(intral_ip__icontains=search)
-                for obj in result_asset_list:
-                    asset_id.append(obj.id)
-                # result_list = Password.objects.filter(ip_id__in=asset_id)
-                result_list = Project.objects.filter(Q(name__icontains=search) |
-                                                     Q(website__icontains=search) |
-                                                     Q(domain__icontains=search) |
-                                                     Q(comment__icontains=search))
-            else:
-                result_list = Project.objects.filter(Q(name__icontains=search)|
-                                                     Q(website__icontains=search)|
-                                                     Q(domain__icontains=search)|
-                                                     Q(comment__icontains=search))
+            result_list = Project.objects.filter(Q(name__icontains=search)|
+                                                 Q(asset__intral_ip__icontains=search)|
+                                                 Q(website__icontains=search)|
+                                                 Q(domain__icontains=search)|
+                                                 Q(comment__icontains=search))
         if order_by:
             if ordering == 'desc':
                 result_list = result_list.order_by('-' + order_by)
@@ -68,7 +53,6 @@ class ProjectView(LoginRequiredMixin, OrderableListMixin, ListView):
         context['ordering'] = self.request.GET.get('ordering', 'asc')
         context['filter_form'] = ProjectListFilterForm(self.request.GET)
         return context
-
 
 class ProjectCreateView(LoginRequiredMixin, CreateView):
     model = Project
