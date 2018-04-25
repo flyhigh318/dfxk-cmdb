@@ -46,18 +46,20 @@
                     用途
                 </a>
             </th>
-            <th>
+            {% if request.user.is_superuser %}
+                <th>
                 <a class="order-by-column" data-column="user" href="#">
                     <i class="fa fa-sort order-by-column_icon"></i>
                     登录账号
                 </a>
             </th>
-            <th>
+                <th>
                 <a class="order-by-column" data-column="password" href="#">
                     <i class="fa fa-sort order-by-column_icon"></i>
                     登录密码
                 </a>
             </th>
+            {% endif %}
             <th>
                 <a class="order-by-column" data-column="comment" href="#">
                     <i class="fa fa-sort order-by-column_icon"></i>
@@ -87,8 +89,10 @@
                 </td>
                 <td id="name{{ o.id }}"><a href="{{ o.name }}" target="_blank">{{ o.name }}</a></td>
                 <td id="name{{ o.id }}">{{ o.use }}</td>
-                <td id="name{{ o.id }}">{{ o.user }}</td>
-                <td id="name{{ o.id }}">{{ o.password }}</td>
+                {% if request.user.is_superuser %}
+                    <td id="name{{ o.id }}">{{ o.user }}</td>
+                    <td id="name{{ o.id }}">{{ o.password }}</td>
+                {% endif %}
                 <td id="comment{{ o.id }}">{{ o.comment }}</td>
                 <td id="create_time{{ o.id }}">{{ o.create_time }}</td>
                 <td id="update_time{{ o.id }}">{{ o.update_time }}</td>

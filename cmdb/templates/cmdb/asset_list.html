@@ -19,6 +19,8 @@
             &nbsp;
 {#            <a href="javascript:void(0)" onclick="data_to_export()"#}
 {#               class="btn btn-sm btn-warning"><i class="fa fa-print"></i> 导出</a>#}
+            <a href="/frontend/cmdb/asset/asset_sync/"
+               class="btn btn-sm btn-warning"><i class="fa fa-update"></i> 同步云数据</a>
             &nbsp;
             {% if request.user.is_superuser %}
             <a href="javascript:void(0)"
@@ -101,7 +103,7 @@
                 </a>
             </th>
             <th>
-                <a class="order-by-column" data-column="account_1" href="#">
+                <a class="order-by-column" data-column="account" href="#">
                     <i class="fa fa-sort order-by-column_icon"></i>
                    所属账号
                 </a>

@@ -12,15 +12,87 @@ from django.views.generic import *
 
 from cmdb.forms.Asset import AssetForm, AssetListFilterForm
 from cmdb.models.Asset import Assets
+from cmdb.models.YunAccount import Yun_Account
 from cobra_main.settings import PER_PAGE
 from django.db.models import Q
+
+from aliyun_api.common.Aliyun import UrlRequest
+from aliyun_api.common.Parameter import CommonParameter
+import json
 
 listview_lazy_url = 'cmdb:asset_list'
 listview_template = 'cmdb/asset_list.html'
 formview_template = 'cmdb/asset_form.html'
 
 
-class AssetView(LoginRequiredMixin, OrderableListMixin, ListView):
+class AssetEcsUpdateSql(object):
+
+    def __init__(self, account):
+        self.account = account
+
+    def insert_sql(self, kwargs):
+        if Assets.objects.filter(intral_ip=kwargs['intral_ip']):
+            Assets.objects.filter(intral_ip=kwargs['intral_ip']).update(
+                 vps_id=kwargs['vps_id'],
+                 vps_name=kwargs['vps_name'],
+                 internet_ip=kwargs['internet_ip'],
+                 system_version=kwargs['system_version'],
+                 core_cpu=kwargs['core_cpu'],
+                 memory=kwargs['memory'],
+                 status=kwargs['status'],
+                 buy_date=kwargs['buy_date'],
+                 deadline=kwargs['deadline']
+            )
+        else:
+             Assets.objects.create(
+                 intral_ip=kwargs['intral_ip'],
+                 intral_net=self.get_net(),
+                 vps_id=kwargs['vps_id'],
+                 vps_name=kwargs['vps_name'],
+                 internet_ip=kwargs['internet_ip'],
+                 system_version=kwargs['system_version'],
+                 core_cpu=kwargs['core_cpu'],
+                 memory=kwargs['memory'],
+                 status=kwargs['status'],
+                 buy_date=kwargs['buy_date'],
+                 deadline=kwargs['deadline'],
+                 account=Yun_Account.objects.get(name__icontains=self.account),
+                 comment=kwargs['vps_name']
+             )
+
+    def update_sql(self):
+        api_parameter = {
+            'Action': 'DescribeInstances',
+            'RegionId': 'cn-shenzhen',
+            'PageNumber': '1',
+            'PageSize': '50'
+        }
+        common = CommonParameter(self.account).get_vps_parameter()
+        result = UrlRequest(api_parameter).getResult(common)
+        result = json.loads(result)
+        a_list = result['Instances']['Instance']
+        for obj in a_list:
+            info_valid = {}
+            info_valid['vps_id'] = obj['InstanceId']
+            info_valid['memory'] = int(obj['Memory']/1024)
+            info_valid['core_cpu'] = int(obj['Cpu'])
+            info_valid['buy_date'] = obj['StartTime']
+            info_valid['deadline'] = obj['ExpiredTime']
+            info_valid['vps_name'] = obj['InstanceName']
+            info_valid['system_version'] = obj['OSName']
+            info_valid['status'] = 1 if obj['Status'] == 'Running' else 0
+            info_valid['intral_ip'] = obj['VpcAttributes']['PrivateIpAddress']['IpAddress'][0]
+            info_valid['internet_ip'] = obj['PublicIpAddress']['IpAddress'][0]
+            self.insert_sql(info_valid)
+
+    def get_net(self):
+        if self.account == 'tiantianqiandai':
+            intral_net = '172.18.16.0/20'
+        elif self.account == 'tiantianjiekuan':
+            intral_net = '172.18.144.0/20'
+        return intral_net
+
+class AssetSyncView(LoginRequiredMixin, ListView):
     model = Assets
     paginate_by = PER_PAGE
     template_name = listview_template
@@ -28,6 +100,33 @@ class AssetView(LoginRequiredMixin, OrderableListMixin, ListView):
     orderable_columns_default = 'id'
     orderable_columns = ['name', 'create_time', 'update_time']
 
+    def sync_asset(self):
+        try:
+            for obj in Yun_Account.objects.filter(name__isnull=False):
+                if obj.name != '东方星空':
+                    AssetEcsUpdateSql(obj.name).update_sql()
+        except Exception as e:
+            print(e)
+
+    def get_queryset(self):
+        result_list = Assets.objects.all()
+        self.sync_asset()
+        return result_list
+
+    def get_context_data(self, **kwargs):
+        context = super(AssetSyncView, self).get_context_data(**kwargs)
+        context['order_by'] = self.request.GET.get('order_by', '')
+        context['ordering'] = self.request.GET.get('ordering', 'asc')
+        context['filter_form'] = AssetListFilterForm(self.request.GET)
+        return context
+    
+class AssetView(LoginRequiredMixin, OrderableListMixin, ListView):
+    model = Assets
+    paginate_by = PER_PAGE
+    template_name = listview_template
+    context_object_name = 'result_list'
+    orderable_columns_default = 'id'
+    orderable_columns = ['name', 'create_time', 'update_time']
 
     def get_queryset(self):
         result_list = Assets.objects.all()
@@ -56,7 +155,6 @@ class AssetView(LoginRequiredMixin, OrderableListMixin, ListView):
         context['filter_form'] = AssetListFilterForm(self.request.GET)
         return context
 
-
 class AssetCreateView(LoginRequiredMixin, CreateView):
     model = Assets
     form_class = AssetForm
@@ -79,19 +177,13 @@ class AssetUpdateView(LoginRequiredMixin, UpdateView):
         context['is_add'] = False
         return context
 
-
-
 class AssetDeleteView(LoginRequiredMixin, JSONResponseMixin,
                      AjaxResponseMixin, View):
     def get_ajax(self, request, *args, **kwargs):
         ids = request.GET.get('id', '')
         if ids != "":
-            list_id = ids.split(',')
-            for id in list_id:
-                old_data = []
-                pl = Assets.objects.filter(id=id)
-
             Assets.objects.filter(pk__in=map(int, ids.split(','))).delete()
             return self.render_json_response({"success": True})
         else:
             return self.render_json_response({"success": False})
+

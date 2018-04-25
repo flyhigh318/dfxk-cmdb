@@ -61,11 +61,15 @@
                     <ul class="nav nav-second-level">
                         <li>
                             <a class="J_menuItem" href="/frontend/cmdb/yun_account/">账号</a>
-                            <a class="J_menuItem" href="/frontend/cmdb/keys/">AK</a>
+                            {% if request.user.is_superuser %}
+                                <a class="J_menuItem" href="/frontend/cmdb/keys/">AK</a>
+                            {% endif %}
                             <a class="J_menuItem" href="/frontend/cmdb/product_line/">产品</a>
                             <a class="J_menuItem" href="/frontend/cmdb/project/">项目</a>
                             <a class="J_menuItem" href="/frontend/cmdb/asset/">资产</a>
-                            <a class="J_menuItem" href="/frontend/cmdb/password/">密码</a>
+                            {% if request.user.is_superuser %}
+                                <a class="J_menuItem" href="/frontend/cmdb/password/">密码</a>
+                            {% endif %}
                             <a class="J_menuItem" href="/frontend/cmdb/website/">网址</a>
                         </li>
                     </ul>
