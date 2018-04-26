@@ -18,7 +18,7 @@ from django.db.models import Q
 
 from aliyun_api.common.Aliyun import UrlRequest
 from aliyun_api.common.Parameter import CommonParameter
-import json
+import json, datetime
 
 listview_lazy_url = 'cmdb:asset_list'
 listview_template = 'cmdb/asset_list.html'
@@ -41,7 +41,8 @@ class AssetEcsUpdateSql(object):
                  memory=kwargs['memory'],
                  status=kwargs['status'],
                  buy_date=kwargs['buy_date'],
-                 deadline=kwargs['deadline']
+                 deadline=kwargs['deadline'],
+                 update_time=self.get_date_time()
             )
         else:
              Assets.objects.create(
@@ -92,6 +93,10 @@ class AssetEcsUpdateSql(object):
             intral_net = '172.18.144.0/20'
         return intral_net
 
+    def get_date_time(self):
+        dt_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        return dt_str
+
 class AssetSyncView(LoginRequiredMixin, ListView):
     model = Assets
     paginate_by = PER_PAGE
@@ -134,6 +139,7 @@ class AssetView(LoginRequiredMixin, OrderableListMixin, ListView):
         order_by = self.request.GET.get('order_by')
         ordering = self.request.GET.get('ordering')
         if search:
+            print(search)
             result_list = Assets.objects.filter(Q(intral_ip__icontains=search)|
                                                 Q(vps_id__icontains=search)|
                                                 Q(vps_name__icontains=search)|
