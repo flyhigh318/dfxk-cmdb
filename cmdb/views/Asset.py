@@ -139,7 +139,6 @@ class AssetView(LoginRequiredMixin, OrderableListMixin, ListView):
         order_by = self.request.GET.get('order_by')
         ordering = self.request.GET.get('ordering')
         if search:
-            print(search)
             result_list = Assets.objects.filter(Q(intral_ip__icontains=search)|
                                                 Q(vps_id__icontains=search)|
                                                 Q(vps_name__icontains=search)|
