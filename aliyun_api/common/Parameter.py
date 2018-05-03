@@ -18,13 +18,21 @@ class CommonParameter(object):
     def __init__(self, account):
         self.account = account
 
-    def get_vps_parameter(self):
+
+    def set_commmon_parameter(self):
         dd = Key.objects.filter(account__name=self.account)
         AccessKeyId = ''
         keySecret = ''
         for obj in dd:
-            AccessKeyId = obj.access_key
-            keySecret = obj.key_secret
+            if obj:
+                AccessKeyId = obj.access_key
+                keySecret = obj.key_secret
+                break
+        else:
+            ret = {}
+            ret['error'] = "there is no accessKeyId and keySecret"
+            ret['code'] = 401
+            return ret
         parameter = {
             'Format': 'JSON',
             'Version': '2014-05-26',
@@ -32,22 +40,17 @@ class CommonParameter(object):
             'SignatureMethod': 'HMAC-SHA1',
             'SignatureVersion': '1.0',
             'keySecret': keySecret,
-            'url': 'https://ecs.aliyuncs.com/'
+            'url': ''
         }
         return parameter
 
+
+    def get_vps_parameter(self):
+        parameter = self.set_commmon_parameter()
+        parameter['url'] = 'https://ecs.aliyuncs.com/'
+        return parameter
+
     def get_slb_parameter(self):
-        dd = Key.objects.filter(account__name=self.account)
-        for obj in dd:
-            AccessKeyId = obj.access_key
-            keySecret = obj.key_secret
-        parameter = {
-            'Format': 'JSON',
-            'Version': '2014-05-26',
-            'AccessKeyId': AccessKeyId,
-            'SignatureMethod': 'HMAC-SHA1',
-            'SignatureVersion': '1.0',
-            'keySecret': keySecret,
-            'url': 'http://slb.aliyuncs.com/'
-        }
+        parameter = self.set_commmon_parameter()
+        parameter['url'] = 'http://slb.aliyuncs.com/'
         return parameter
