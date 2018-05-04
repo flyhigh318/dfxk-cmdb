@@ -53,12 +53,29 @@ urlpatterns = [
         url(r'^delete_entity/', PasswordDeleteView.as_view(), name='password_delete'),
     ])),
 
-    # 密码表
+    # 网址表
     url(r'^website/', include([
         url(r'^$', WebsiteView.as_view(), name='website_list'),
         url(r'^website_add/', WebsiteCreateView.as_view(), name='website_add'),
         url(r'^(?P<pk>\d+)/website_edit/', WebsiteUpdateView.as_view(), name='website_edit'),
         url(r'^delete_entity/', WebsiteDeleteView.as_view(), name='website_delete'),
     ])),
+
+    # 负载均衡LB
+    url(r'^lb/', include([
+        url(r'^$', LbView.as_view(), name='Lb_list'),
+        url(r'^lb_add/', LbCreateView.as_view(), name='Lb_add'),
+        url(r'^(?P<pk>\d+)/lb_edit/', LbUpdateView.as_view(), name='lb_edit'),
+        url(r'^delete_entity/', LbDeleteView.as_view(), name='lb_delete'),
+        url(r'^lb_sync/', LbSyncView.as_view(), name='asset_sync'),
+    ])),
+
+    # # 负载均衡后端服务器
+    # url(r'^backend_servers/', include([
+    #     url(r'^$', BackendServersView.as_view(), name='Lb_list'),
+    #     url(r'^backend_servers_add/', BackendServersCreateView.as_view(), name='Lb_add'),
+    #     url(r'^(?P<pk>\d+)/backend_servers_edit/', BackendServersUpdateView.as_view(), name='lb_edit'),
+    #     url(r'^delete_entity/', BackendServersDeleteView.as_view(), name='lb_delete'),
+    # ])),
 
 ]

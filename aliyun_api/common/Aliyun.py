@@ -99,6 +99,7 @@ class UrlRequest(Aliyun):
                 return result
             else:
                 result['CodeStatus'] = ret.status_code
+                result['message'] = json.dumps(ret.json(), ensure_ascii=False)
                 result['error'] = "请求结果错误"
                 return result
         except Exception as e:
