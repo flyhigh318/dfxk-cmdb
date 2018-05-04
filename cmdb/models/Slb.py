@@ -22,23 +22,29 @@ class Lb(BaseModel):
     buy_date = models.DateTimeField(blank=True, null=True, verbose_name='购买日期')
     comment = models.CharField(max_length=255, null=True, blank=True, default=' ', verbose_name='备注')
 
-    def __repr__(self):
-        return '<Lb(name=%s)>' % self.name
+    # def __repr__(self):
+    #     return '<Lb(name=%s)>' % self.name
+
+    def __str__(self):
+        return '%s' % self.name
 
     class Meta:
         verbose_name = "负载均衡"
         verbose_name_plural = verbose_name
 
 class Backend_Server(BaseModel):
-    lb = models.ManyToManyField(Lb,blank=True, null=True, related_name="lbid", verbose_name='LBID')
-    server_id = models.ForeignKey(Assets, blank=True, null=True, related_name="assets", verbose_name='Asset')
+    lb = models.ForeignKey(Lb,blank=True, null=True, related_name="lbid", verbose_name='LB名称')
+    server_id = models.ManyToManyField(Assets, blank=True, null=True, related_name="assets", verbose_name='内网ip')
     weight = models.CharField(max_length=255, null=True, blank=True, verbose_name='权重')
     status = models.IntegerField(blank=True, choices=[(1, '正常'), (2, '异常')], default=0, null=True, verbose_name='状态')
-    listen_ports = models.CharField(max_length=255, null=True, blank=True, verbose_name='"监听端口"')
+    listen_ports = models.CharField(max_length=255, null=True, blank=True, verbose_name='监听端口')
     comment = models.CharField(max_length=255, null=True, blank=True, default=' ', verbose_name='备注')
 
     def __repr__(self):
         return '<Backend_Server(server_id=%s)>' % self.server_id
+
+    def __str__(self):
+        return '%s' % self.weight
 
     class Meta:
         verbose_name = "后端服务器"

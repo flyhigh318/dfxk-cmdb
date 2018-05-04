@@ -1,0 +1,174 @@
+{% extends 'common/basic_list.html' %}
+
+{% block list_title %}
+   SLB 后端服务器
+{% endblock %}
+
+{% block list_filter %}
+    <link href="/static/hplus/js/plugins/sweetalert2/sweetalert2.css" rel="stylesheet">
+    <script src="/static/hplus/js/plugins/sweetalert2/sweetalert2.all.js"></script>
+{#    <div class="col-sm-1" id="select_column" column-name="CdnDomain">#}
+{#        <select class="selectpicker" multiple data-style="btn-white" style="width: 25px !important;"></select>#}
+{#    </div>#}
+    <div class="col-sm-4">
+        <div class="input-group">
+            <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i> 搜索</button>
+            &nbsp;
+            <a href="/frontend/cmdb/backend_servers/backend_servers_add/"
+               class="btn btn-sm btn-success"><i class="fa fa-plus"></i> 新增</a>
+
+            &nbsp;
+{#            <a href="javascript:void(0)" onclick="data_to_export()"#}
+{#               class="btn btn-sm btn-warning"><i class="fa fa-print"></i> 导出</a>#}
+
+            <a href="/frontend/cmdb/backend_servers/backend_servers_sync/"
+               class="btn btn-sm btn-warning"><i class="fa fa-update"></i> 同步云数据</a>
+
+            &nbsp;
+            {% if request.user.is_superuser %}
+            <a href="javascript:void(0)"
+               onclick="confirm_delete()"
+               class="btn btn-sm btn-danger"><i class="fa fa-trash"></i> 批量删除</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block list_content %}
+    <table class="table table-striped table-bordered table-hover dataTables-example dataTable">
+        <thead>
+        <tr>
+            <th><input id="checkall" type="checkbox" class="i-checks"></th>
+            <th>
+                <a class="order-by-column" data-column="lb" href="#">
+                    <i class="fa fa-sort order-by-column_icon"></i>
+                   Lb名称
+                </a>
+            </th>
+            <th>
+                <a class="order-by-column" data-column="lb" href="#">
+                    <i class="fa fa-sort order-by-column_icon"></i>
+                   SLBip
+                </a>
+            </th>
+            <th>
+                <a class="order-by-column" data-column="server_id" href="#">
+                    <i class="fa fa-sort order-by-column_icon"></i>
+                   vps名称
+                </a>
+            </th>
+            <th>
+                <a class="order-by-column" data-column="server_id" href="#">
+                    <i class="fa fa-sort order-by-column_icon"></i>
+                   内网ip
+                </a>
+            </th>
+            <th>
+                <a class="order-by-column" data-column="weight" href="#">
+                    <i class="fa fa-sort order-by-column_icon"></i>
+                   权重
+                </a>
+            </th>
+            <th>
+                <a class="order-by-column" data-column="status" href="#">
+                    <i class="fa fa-sort order-by-column_icon"></i>
+                   状态
+                </a>
+            </th>
+            <th>
+                <a class="order-by-column" data-column="listen_ports" href="#">
+                    <i class="fa fa-sort order-by-column_icon"></i>
+                   监听端口
+                </a>
+            </th>
+            <th>
+                <a class="order-by-column" data-column="comment" href="#">
+                    <i class="fa fa-sort order-by-column_icon"></i>
+                   备注
+                </a>
+            </th>
+            <th>
+                <a class="order-by-column" data-column="create_time" href="#">
+                    <i class="fa fa-sort order-by-column_icon"></i>
+                    创建日期
+                </a>
+            </th>
+            <th>
+                <a class="order-by-column" data-column="update_time" href="#">
+                    <i class="fa fa-sort order-by-column_icon"></i>
+                    更新日期
+                </a>
+            </th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for o in result_list %}
+            <tr>
+                <td>
+                    <input type="checkbox" class="i-checks icheck" id="{{ o.id }}" name="input[]">
+                </td>
+                <td id="name{{ o.id }}">{{ o.lb.name }}</td>
+                <td id="name{{ o.id }}">{{ o.lb.ip_address }}</td>
+                <td id="name{{ o.id }}">
+                    {% for oo in o.server_id.all %}
+                        {{ oo.vps_name}}<br>
+                    {% endfor %}
+                </td>
+                <td id="name{{ o.id }}">
+                    {% for oo in o.server_id.all %}
+                        {{ oo.intral_ip}}<br>
+                    {% endfor %}
+                </td>
+                <td id="name{{ o.id }}">{{ o.weight }}</td>
+                {% if o.status == 1 %}
+                    <td id="name{{ o.id }}">正常</td>
+                {% else %}
+                    <td id="name{{ o.id }}">异常</td>
+                {% endif %}
+                <td id="name{{ o.id }}">{{ o.listen_ports }}</td>
+                <td id="comment{{ o.id }}">{{ o.comment }}</td>
+                <td id="create_time{{ o.id }}">{{ o.create_time }}</td>
+                <td id="update_time{{ o.id }}">{{ o.update_time }}</td>
+                <td>
+{#                    <a href="/frontend/cmdb/cdn_domain_list/{{ o.id }}/yun_account_details/"#}
+{#                           class="btn btn-xs btn-success"><i class="fa fa-expand"></i>详细</a>#}
+                    <a href="{{ o.id }}/backend_servers_edit/"
+                       class="btn  btn-xs btn-info"><i class="fa fa-edit"></i>编辑</a>
+                    {% if request.user.is_superuser %}
+                    <a href="javascript:void(0)"
+                       onclick="confirm_delete('{{ o.id }}')"
+                       class="btn  btn-xs btn-danger"><i class="fa fa-trash"></i>删除</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <div id="tableExport" style=""></div>
+
+    <script>
+        $(document).ready(function () {
+        });
+
+        function confirm_delete(id){
+            swal({
+                html: '危险动作，请确认是否删除记录',
+                showCancelButton: true,
+                width: 500,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+            }).then(function (result) {
+                if (result.value) {
+                    if(id){
+                        deleteAction(id)
+                    }else{
+                        deleteBatch()
+                    }
+                }
+            })
+        }//confirm_delete
+    </script>
+{% endblock %}

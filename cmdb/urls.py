@@ -70,12 +70,13 @@ urlpatterns = [
         url(r'^lb_sync/', LbSyncView.as_view(), name='asset_sync'),
     ])),
 
-    # # 负载均衡后端服务器
-    # url(r'^backend_servers/', include([
-    #     url(r'^$', BackendServersView.as_view(), name='Lb_list'),
-    #     url(r'^backend_servers_add/', BackendServersCreateView.as_view(), name='Lb_add'),
-    #     url(r'^(?P<pk>\d+)/backend_servers_edit/', BackendServersUpdateView.as_view(), name='lb_edit'),
-    #     url(r'^delete_entity/', BackendServersDeleteView.as_view(), name='lb_delete'),
-    # ])),
+    # 负载均衡后端服务器
+    url(r'^backend_servers/', include([
+        url(r'^$', BackendServersView.as_view(), name='backend_servers_list'),
+        url(r'^backend_servers_add/', BackendServersCreateView.as_view(), name='backend_servers_add'),
+        url(r'^(?P<pk>\d+)/backend_servers_edit/', BackendServersUpdateView.as_view(), name='backend_servers_edit'),
+        url(r'^delete_entity/', BackendServersDeleteView.as_view(), name='backend_servers_delete'),
+        url(r'^backend_servers_sync/', BackendServersSyncView.as_view(), name='backend_servers_sync'),
+    ])),
 
 ]
