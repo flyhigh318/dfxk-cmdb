@@ -36,7 +36,7 @@ class Backend_Server(BaseModel):
     lb = models.ForeignKey(Lb,blank=True, null=True, related_name="lbid", verbose_name='LB名称')
     server_id = models.ManyToManyField(Assets, blank=True, null=True, related_name="assets", verbose_name='内网ip')
     weight = models.CharField(max_length=255, null=True, blank=True, verbose_name='权重')
-    status = models.IntegerField(blank=True, choices=[(1, '正常'), (2, '异常')], default=0, null=True, verbose_name='状态')
+    status = models.CharField(max_length=255, null=True, blank=True, verbose_name='状态')
     listen_ports = models.CharField(max_length=255, null=True, blank=True, verbose_name='监听端口')
     comment = models.CharField(max_length=255, null=True, blank=True, default=' ', verbose_name='备注')
 

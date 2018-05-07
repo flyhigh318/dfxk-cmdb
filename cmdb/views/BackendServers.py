@@ -39,7 +39,7 @@ class BackendServersUpdateSql(object):
         if Backend_Server.objects.filter(lb__ip_address=kwargs['ip_address']):
             Backend_Server.objects.filter(lb__ip_address=kwargs['ip_address']).update(
                  lb=Lb.objects.get(load_balancer_id=kwargs['load_balancer_id']),
-                 # status=kwargs['status'],
+                 status=kwargs['status'],
                  weight=kwargs['weight'],
                  listen_ports=kwargs['listen_ports'],
                  update_time=self.get_date_time()
@@ -61,7 +61,7 @@ class BackendServersUpdateSql(object):
         else:
              bs = Backend_Server(
                  lb=Lb.objects.get(load_balancer_id=kwargs['load_balancer_id']),
-                 # status=kwargs['status'],
+                 status=kwargs['status'],
                  weight=kwargs['weight'],
                  listen_ports=kwargs['listen_ports'],
                  comment=kwargs['comment']
@@ -74,7 +74,6 @@ class BackendServersUpdateSql(object):
                  a = Assets.objects.filter(vps_id__in=kwargs['vps_id_list'])
                  for obj in a:
                      bs.server_id.add(obj)
-
 
     def update_sql(self, LoadBalancerId):
         api_parameter = {
@@ -105,7 +104,7 @@ class BackendServersUpdateSql(object):
                info_valid['vps_id_list'] = vps_id_list[0]
                info_valid['weight'] = weight_list[0]
 
-        # info_valid['status'] =  self.get_date_time()
+        info_valid['status'] =  self.get_backend_server_status(LoadBalancerId)
         info_valid['region_id'] = obj['RegionId']
 
         listener_port_list = []
@@ -137,7 +136,22 @@ class BackendServersUpdateSql(object):
         return dt_str
 
     def get_backend_server_status(self, LoadBalancerId):
-        pass
+        api_parameter = {
+            'Action': 'DescribeHealthStatus',
+            'RegionId': 'cn-shenzhen',
+            'LoadBalancerId': LoadBalancerId
+        }
+        common = CommonParameter(self.account).get_slb_parameter()
+        common['Version'] = '2014-05-15'
+        result = UrlRequest(api_parameter).getResult(common)
+        result = json.loads(result)
+        for i_dict in result['BackendServers']['BackendServer']:
+            if i_dict['ServerHealthStatus'] == 'abnormal':
+                statu = u'异常'
+                break
+        else:
+            statu = u'正常'
+        return statu
 
 
 class BackendServersSyncView(LoginRequiredMixin, ListView):
@@ -184,19 +198,19 @@ class BackendServersView(LoginRequiredMixin, OrderableListMixin, ListView):
     def get_queryset(self):
         result_list = Backend_Server.objects.all()
         search = self.request.GET.get('name')
-        # print('test search: ----> ', search)
         order_by = self.request.GET.get('order_by')
         ordering = self.request.GET.get('ordering')
 
         if search:
             try:
-                result_list = Lb.objects.filter(Q(name__icontains=search)|
-                                            Q(ip_address__icontains=search)|
-                                            Q(load_balancer_id__icontains=search)|
-                                            Q(region_id__icontains=search)|
-                                            Q(listen_ports__icontains=search)|
-                                            Q(listen_protocal__icontains=search)|
-                                            Q(comment__icontains=search))
+                result_list = Backend_Server.objects.filter(Q(lb__name__icontains=search)|
+                                                            Q(lb__ip_address__icontains=search)|
+                                                            Q(server_id__vps_name__icontains=search)|
+                                                            Q(server_id__intral_ip__icontains=search)|
+                                                            Q(listen_ports__icontains=search)|
+                                                            Q(weight__icontains=search)|
+                                                            Q(status__icontains=search)|
+                                                            Q(comment__icontains=search))
                 return result_list
             except Exception as e:
                 print(e)

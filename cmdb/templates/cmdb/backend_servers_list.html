@@ -121,11 +121,13 @@
                     {% endfor %}
                 </td>
                 <td id="name{{ o.id }}">{{ o.weight }}</td>
-                {% if o.status == 1 %}
-                    <td id="name{{ o.id }}">正常</td>
-                {% else %}
-                    <td id="name{{ o.id }}">异常</td>
-                {% endif %}
+                <td id="name{{ o.id }}">
+                    {% if  o.status == '异常' %}
+                        <font color="red">{{ o.status }}</font>
+                    {% elif o.status == '正常' %}
+                        <font color="green">{{ o.status }}</font>
+                    {% endif %}
+                </td>
                 <td id="name{{ o.id }}">{{ o.listen_ports }}</td>
                 <td id="comment{{ o.id }}">{{ o.comment }}</td>
                 <td id="create_time{{ o.id }}">{{ o.create_time }}</td>
