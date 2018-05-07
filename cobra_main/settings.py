@@ -98,14 +98,25 @@ WSGI_APPLICATION = 'cobra_main.wsgi.application'
 # }
 
 
+# DATABASES = {
+#      'default': {
+#          'ENGINE': 'django.db.backends.mysql',
+#          'NAME': 'cmdb',
+#          'USER': 'root',
+#          'PORT': '33060',
+#          'PASSWORD': 'dfxk123456',
+#          'HOST': '192.168.102.28',
+#      }
+# } 
+
 DATABASES = {
      'default': {
          'ENGINE': 'django.db.backends.mysql',
          'NAME': 'cmdb',
          'USER': 'root',
-         'PORT': '33060',
-         'PASSWORD': 'dfxk123456',
-         'HOST': '192.168.102.28',
+         'PORT': '3306',
+         'PASSWORD': '123456',
+         'HOST': 'mysql',
      }
 }
 
