@@ -113,7 +113,7 @@ class BackendServersUpdateSql(object):
         info_valid['listen_ports'] = '|'.join(listener_port_list)
 
         info_valid['comment'] = obj['LoadBalancerName']
-        print('info_valid:  ', info_valid)
+        # print('info_valid:  ', info_valid)
         self.insert_sql(info_valid)
 
     def get_load_balancer_id(self):
@@ -172,7 +172,6 @@ class BackendServersSyncView(LoginRequiredMixin, ListView):
                         instance.update_sql(loadBalancerId)
         except Exception as e:
             raise (e)
-            print(e)
 
     def get_queryset(self):
         result_list = Backend_Server.objects.all()

@@ -105,10 +105,10 @@ class LbUpdateSql(object):
         common = CommonParameter(self.account).get_slb_parameter()
         common['Version'] = '2014-05-15'
         result = UrlRequest(api_parameter).getResult(common)
-        print('result: ', result)
+        # print('result: ', result)
         result = json.loads(result)
         a_list = result['LoadBalancers']['LoadBalancer']
-        print('a_list: ', a_list)
+        # print('a_list: ', a_list)
         lb_id = []
         for obj in a_list:
             lb_id.append(obj['LoadBalancerId'])
