@@ -17,7 +17,7 @@ from cmdb.forms import *
 from cmdb.models import *
 from cobra_main.settings import PER_PAGE
 from django.db.models import Q
-
+from django.utils import timezone
 
 listview_lazy_url = 'cmdb:domain_record_list'
 listview_template = 'cmdb/domain_record_list.html'
@@ -35,7 +35,8 @@ class DomainRecordsUpdateSql(object):
             Domain_Records.objects.filter(rr=kwargs['rr'],
                                           type=kwargs['type'],
                                           value=kwargs['value']
-                                          ).update(**kwargs, update_time=self.get_date_time())
+                                          # ).update(**kwargs, update_time=self.get_date_time())
+                                          ).update(**kwargs, update_time=timezone.now())
         else:
              Domain_Records.objects.create(**kwargs)
 
@@ -47,7 +48,7 @@ class DomainRecordsUpdateSql(object):
             'PageNumber': '1',
             'PageSize': '100'
         }
-        domainNames = Domain.objects.filter(account__name=self.account).filter(domain_records1__rr__isnull=True)
+        domainNames = Domain.objects.filter(account__name=self.account).filter(domain_records1__rr__isnull=False)
         for obj in domainNames:
             domainName = obj.domain_name
             print("domainName: ", domainName)

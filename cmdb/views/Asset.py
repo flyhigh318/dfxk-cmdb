@@ -18,7 +18,8 @@ from django.db.models import Q
 
 from aliyun_api.common.Aliyun import UrlRequest
 from aliyun_api.common.Parameter import CommonParameter
-import json, datetime
+import json
+from django.utils import timezone
 
 listview_lazy_url = 'cmdb:asset_list'
 listview_template = 'cmdb/asset_list.html'
@@ -42,7 +43,7 @@ class AssetEcsUpdateSql(object):
                  status=kwargs['status'],
                  buy_date=kwargs['buy_date'],
                  deadline=kwargs['deadline'],
-                 update_time=self.get_date_time()
+                 update_time=timezone.now()
             )
         else:
              Assets.objects.create(
@@ -93,9 +94,6 @@ class AssetEcsUpdateSql(object):
             intral_net = '172.18.144.0/20'
         return intral_net
 
-    def get_date_time(self):
-        dt_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        return dt_str
 
 class AssetSyncView(LoginRequiredMixin, ListView):
     model = Assets

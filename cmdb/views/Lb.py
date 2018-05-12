@@ -18,6 +18,7 @@ from cmdb.models import *
 from cobra_main.settings import PER_PAGE
 from cmdb.models.Slb import Lb
 from django.db.models import Q
+from django.utils import timezone
 
 
 listview_lazy_url = 'cmdb:lb_list'
@@ -42,7 +43,7 @@ class LbUpdateSql(object):
                  listen_ports=kwargs['listen_ports'],
                  listen_protocal=kwargs['listen_protocal'],
                  buy_date=kwargs['buy_date'],
-                 update_time=self.get_date_time()
+                 update_time=timezone.now()
             )
         else:
              Lb.objects.create(
@@ -116,9 +117,6 @@ class LbUpdateSql(object):
             lb_id.append(obj['LoadBalancerId'])
         return lb_id
 
-    def get_date_time(self):
-        dt_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        return dt_str
 
 class LbSyncView(LoginRequiredMixin, ListView):
     model = Lb

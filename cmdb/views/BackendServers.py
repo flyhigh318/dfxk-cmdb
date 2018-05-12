@@ -18,12 +18,13 @@ from django.views.generic import *
 
 from aliyun_api.common.Aliyun import UrlRequest
 from aliyun_api.common.Parameter import CommonParameter
-import json, datetime
+import json
 from cmdb.forms import *
 from cmdb.models import *
 from cobra_main.settings import PER_PAGE
 from cmdb.models.Slb import Backend_Server
 from django.db.models import Q
+from django.utils import timezone
 
 
 listview_lazy_url = 'cmdb:backend_servers_list'
@@ -42,7 +43,7 @@ class BackendServersUpdateSql(object):
                  status=kwargs['status'],
                  weight=kwargs['weight'],
                  listen_ports=kwargs['listen_ports'],
-                 update_time=self.get_date_time()
+                 update_time=timezone.now()
             )
             #移除多对多关系对象数据
             bs = Backend_Server.objects.get(lb__ip_address=kwargs['ip_address'])
@@ -131,9 +132,6 @@ class BackendServersUpdateSql(object):
             lb_id.append(obj['LoadBalancerId'])
         return lb_id
 
-    def get_date_time(self):
-        dt_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        return dt_str
 
     def get_backend_server_status(self, LoadBalancerId):
         api_parameter = {

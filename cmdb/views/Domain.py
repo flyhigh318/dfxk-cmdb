@@ -13,11 +13,12 @@ from django.views.generic import *
 
 from aliyun_api.common.Aliyun import UrlRequest
 from aliyun_api.common.Parameter import CommonParameter
-import json, datetime
+import json
 from cmdb.forms import *
 from cmdb.models import *
 from cobra_main.settings import PER_PAGE
 from django.db.models import Q
+from django.utils import timezone
 
 
 listview_lazy_url = 'cmdb:domain_list'
@@ -37,7 +38,7 @@ class DomainsUpdateSql(object):
                  dns_servers=kwargs['dns_servers'],
                  ali_domain=kwargs['ali_domain'],
                  version_name=kwargs['version_name'],
-                 update_time=self.get_date_time()
+                 update_time=timezone.now()
             )
         else:
              Domain.objects.create(
@@ -75,10 +76,6 @@ class DomainsUpdateSql(object):
                 self.insert_sql(**info_valid)
         else:
             print("domain_list is not a list")
-
-    def get_date_time(self):
-        dt_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        return dt_str
 
 class DomainsSyncView(LoginRequiredMixin, ListView):
     model = Domain
