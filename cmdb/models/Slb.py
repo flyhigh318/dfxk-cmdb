@@ -8,6 +8,7 @@
 from django.db import models
 from common.models import BaseModel
 from cmdb.models.Asset import Assets
+from cmdb.models.YunAccount import Yun_Account
 
 class Lb(BaseModel):
     name = models.CharField(max_length=255, null=False, blank=False, verbose_name='LB名称')
@@ -20,6 +21,7 @@ class Lb(BaseModel):
     listen_ports = models.CharField(max_length=255, null=True, blank=True, verbose_name='监听端口')
     listen_protocal = models.CharField(max_length=255, null=True, blank=True, verbose_name='监听协议')
     buy_date = models.DateTimeField(blank=True, null=True, verbose_name='购买日期')
+    account = models.ForeignKey(Yun_Account, null=True, blank=True, related_name='lb', verbose_name="云账号")
     comment = models.CharField(max_length=255, null=True, blank=True, default=' ', verbose_name='备注')
 
     # def __repr__(self):

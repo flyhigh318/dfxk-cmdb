@@ -7,3 +7,5 @@ from .Asset import *
 from .PasswordForm import *
 from .LbForm import *
 from .BackendServersForm import *
+from .DomainsForm import *
+from .DomainRecordsForm import *

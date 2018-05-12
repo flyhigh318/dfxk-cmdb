@@ -1,7 +1,7 @@
 {% extends 'common/basic_list.html' %}
 
 {% block list_title %}
-   SLB负载均衡
+   域名信息
 {% endblock %}
 
 {% block list_filter %}
@@ -14,13 +14,13 @@
         <div class="input-group">
             <button type="submit" class="btn btn-sm btn-primary"><i class="fa fa-search"></i> 搜索</button>
             &nbsp;
-            <a href="/frontend/cmdb/lb/lb_add/"
+            <a href="/frontend/cmdb/domain/domain_add/"
                class="btn btn-sm btn-success"><i class="fa fa-plus"></i> 新增</a>
 
             &nbsp;
 {#            <a href="javascript:void(0)" onclick="data_to_export()"#}
 {#               class="btn btn-sm btn-warning"><i class="fa fa-print"></i> 导出</a>#}
-            <a href="/frontend/cmdb/lb/lb_sync/"
+            <a href="/frontend/cmdb/domain/domain_sync/"
                class="btn btn-sm btn-warning"><i class="fa fa-update"></i> 同步云数据</a>
 
             &nbsp;
@@ -39,57 +39,33 @@
         <tr>
             <th><input id="checkall" type="checkbox" class="i-checks"></th>
             <th>
-                <a class="order-by-column" data-column="name" href="#">
+                <a class="order-by-column" data-column="domain_name" href="#">
                     <i class="fa fa-sort order-by-column_icon"></i>
-                   Lb名称
+                   域名
                 </a>
             </th>
             <th>
-                <a class="order-by-column" data-column="load_balancer_id" href="#">
+                <a class="order-by-column" data-column="domain_id" href="#">
                     <i class="fa fa-sort order-by-column_icon"></i>
-                   Lbid
+                   域名id
                 </a>
             </th>
             <th>
-                <a class="order-by-column" data-column="ip_address" href="#">
+                <a class="order-by-column" data-column="dns_servers" href="#">
                     <i class="fa fa-sort order-by-column_icon"></i>
-                   公网ip
+                   DNS服务器
                 </a>
             </th>
             <th>
-                <a class="order-by-column" data-column="status" href="#">
+                <a class="order-by-column" data-column="ali_domains" href="#">
                     <i class="fa fa-sort order-by-column_icon"></i>
-                   状态
+                   是否阿里域名
                 </a>
             </th>
             <th>
-                <a class="order-by-column" data-column="ip_type" href="#">
+                <a class="order-by-column" data-column="version_name" href="#">
                     <i class="fa fa-sort order-by-column_icon"></i>
-                   IP类型
-                </a>
-            </th>
-            <th>
-                <a class="order-by-column" data-column="region_id" href="#">
-                    <i class="fa fa-sort order-by-column_icon"></i>
-                   区域id
-                </a>
-            </th>
-            <th>
-                <a class="order-by-column" data-column="listen_ports" href="#">
-                    <i class="fa fa-sort order-by-column_icon"></i>
-                   监听端口
-                </a>
-            </th>
-            <th>
-                <a class="order-by-column" data-column="listen_protocal" href="#">
-                    <i class="fa fa-sort order-by-column_icon"></i>
-                   监听协议
-                </a>
-            </th>
-            <th>
-                <a class="order-by-column" data-column="buy_date" href="#">
-                    <i class="fa fa-sort order-by-column_icon"></i>
-                   购买日期
+                   厂商
                 </a>
             </th>
             <th>
@@ -125,19 +101,11 @@
                 <td>
                     <input type="checkbox" class="i-checks icheck" id="{{ o.id }}" name="input[]">
                 </td>
-                <td id="name{{ o.id }}">{{ o.name }}</td>
-                <td id="name{{ o.id }}">{{ o.load_balancer_id }}</td>
-                <td id="name{{ o.id }}">{{ o.ip_address }}</td>
-                {% if o.status == 1 %}
-                    <td id="name{{ o.id }}">激活</td>
-                {% else %}
-                    <td id="name{{ o.id }}">未激活</td>
-                {% endif %}
-                <td id="name{{ o.id }}">{{ o.ip_type }}</td>
-                <td id="name{{ o.id }}">{{ o.region_id }}</td>
-                <td id="name{{ o.id }}">{{ o.listen_ports }}</td>
-                <td id="name{{ o.id }}">{{ o.listen_protocal }}</td>
-                <td id="name{{ o.id }}">{{ o.buy_date }}</td>
+                <td id="name{{ o.id }}">{{ o.domain_name }}</td>
+                <td id="name{{ o.id }}">{{ o.domain_id }}</td>
+                <td id="name{{ o.id }}">{{ o.dns_servers }}</td>
+                <td id="name{{ o.id }}">{{ o.ali_domain }}</td>
+                <td id="name{{ o.id }}">{{ o.version_name }}</td>
                 <td id="name{{ o.id }}">{{ o.account.comment }}</td>
                 <td id="comment{{ o.id }}">{{ o.comment }}</td>
                 <td id="create_time{{ o.id }}">{{ o.create_time }}</td>
@@ -145,7 +113,7 @@
                 <td>
 {#                    <a href="/frontend/cmdb/cdn_domain_list/{{ o.id }}/yun_account_details/"#}
 {#                           class="btn btn-xs btn-success"><i class="fa fa-expand"></i>详细</a>#}
-                    <a href="{{ o.id }}/lb_edit/"
+                    <a href="{{ o.id }}/domain_edit/"
                        class="btn  btn-xs btn-info"><i class="fa fa-edit"></i>编辑</a>
                     {% if request.user.is_superuser %}
                     <a href="javascript:void(0)"

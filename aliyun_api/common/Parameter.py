@@ -48,9 +48,17 @@ class CommonParameter(object):
     def get_vps_parameter(self):
         parameter = self.set_commmon_parameter()
         parameter['url'] = 'https://ecs.aliyuncs.com/'
+        parameter['Version'] = '2014-05-26'
         return parameter
 
     def get_slb_parameter(self):
         parameter = self.set_commmon_parameter()
         parameter['url'] = 'http://slb.aliyuncs.com/'
+        parameter['Version'] = '2014-05-15'
+        return parameter
+
+    def get_dns_parameter(self):
+        parameter = self.set_commmon_parameter()
+        parameter['url'] = 'http://alidns.aliyuncs.com'
+        parameter['Version'] = '2015-01-09'
         return parameter

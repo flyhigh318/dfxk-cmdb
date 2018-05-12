@@ -56,6 +56,7 @@ class LbUpdateSql(object):
                  listen_ports=kwargs['listen_ports'],
                  listen_protocal=kwargs['listen_protocal'],
                  buy_date=kwargs['buy_date'],
+                 account=kwargs['account'],
                  comment=kwargs['comment']
              )
 
@@ -94,6 +95,7 @@ class LbUpdateSql(object):
                info_valid['listen_protocal'] = listener_protocol_list[0]
 
         info_valid['buy_date'] = obj['CreateTime']
+        info_valid['account'] = Yun_Account.objects.get(name=self.account)
         info_valid['comment'] = obj['LoadBalancerName']
         self.insert_sql(info_valid)
 

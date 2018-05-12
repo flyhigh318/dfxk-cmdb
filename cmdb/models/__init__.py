@@ -7,3 +7,4 @@ from .Asset import *
 from .Password import *
 from .Website import *
 from .Slb import *
+from .Domain import *

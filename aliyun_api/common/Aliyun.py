@@ -92,6 +92,7 @@ class UrlRequest(Aliyun):
         result = {}
         try:
             url = self.getUrl(commonParameter)
+            # print("url: ",url)
             ret = requests.get(url)
             if ret.status_code == 200:
                 r = ret.json()

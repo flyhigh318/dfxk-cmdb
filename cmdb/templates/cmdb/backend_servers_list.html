@@ -82,6 +82,12 @@
                 </a>
             </th>
             <th>
+                <a class="order-by-column" data-column="lb" href="#">
+                    <i class="fa fa-sort order-by-column_icon"></i>
+                   云账号
+                </a>
+            </th>
+            <th>
                 <a class="order-by-column" data-column="comment" href="#">
                     <i class="fa fa-sort order-by-column_icon"></i>
                    备注
@@ -129,6 +135,7 @@
                     {% endif %}
                 </td>
                 <td id="name{{ o.id }}">{{ o.listen_ports }}</td>
+                <td id="name{{ o.id }}">{{ o.lb.account.comment }}</td>
                 <td id="comment{{ o.id }}">{{ o.comment }}</td>
                 <td id="create_time{{ o.id }}">{{ o.create_time }}</td>
                 <td id="update_time{{ o.id }}">{{ o.update_time }}</td>
