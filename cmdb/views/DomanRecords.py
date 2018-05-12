@@ -106,7 +106,9 @@ class DomainRecordsSyncView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         result_list = Domain_Records.objects.all()
-        self.sync_domain_record()
+        action = self.request.GET.get("paginate_by")
+        if not action:
+           self.sync_domain_record()
         return result_list
 
     def get_context_data(self, **kwargs):
@@ -184,8 +186,7 @@ class DomainRecordsUpdateView(LoginRequiredMixin, UpdateView):
         context['is_add'] = False
         return context
 
-class DomainRecordsDeleteView(LoginRequiredMixin, JSONResponseMixin,
-                     AjaxResponseMixin, View):
+class DomainRecordsDeleteView(LoginRequiredMixin, JSONResponseMixin, AjaxResponseMixin, View):
     def get_ajax(self, request, *args, **kwargs):
         ids = request.GET.get('id', '')
         if ids != "":
