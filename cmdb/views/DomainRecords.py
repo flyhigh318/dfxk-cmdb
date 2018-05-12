@@ -2,7 +2,7 @@
 # @Time    : 2018/5/8 17:09
 # @Author  : Abner
 # @Email   : tangrongwen@dfxkdata.com
-# @File    : DomanRecords.py
+# @File    : DomainRecords.py
 # @Software: PyCharm
 
 from braces.views import *

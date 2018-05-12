@@ -8,4 +8,4 @@ from .Website import *
 from .Lb import *
 from .BackendServers import *
 from .Domain import *
-from .DomanRecords import *
+from .DomainRecords import *
