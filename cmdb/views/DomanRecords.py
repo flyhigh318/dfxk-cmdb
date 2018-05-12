@@ -25,7 +25,8 @@ formview_template = 'cmdb/domain_record_form.html'
 
 class DomainRecordsUpdateSql(object):
 
-    def __init__(self, account):
+    def __init__(self, domainName, account):
+        self.domainName = domainName
         self.account = account
 
     def insert_sql(self, **kwargs):
@@ -35,7 +36,6 @@ class DomainRecordsUpdateSql(object):
             Domain_Records.objects.filter(rr=kwargs['rr'],
                                           type=kwargs['type'],
                                           value=kwargs['value']
-                                          # ).update(**kwargs, update_time=self.get_date_time())
                                           ).update(**kwargs, update_time=timezone.now())
         else:
              Domain_Records.objects.create(**kwargs)
@@ -48,43 +48,41 @@ class DomainRecordsUpdateSql(object):
             'PageNumber': '1',
             'PageSize': '100'
         }
-        domainNames = Domain.objects.filter(account__name=self.account).filter(domain_records1__rr__isnull=False)
-        for obj in domainNames:
-            domainName = obj.domain_name
-            print("domainName: ", domainName)
-            api_parameter['DomainName'] = domainName if domainName else False
-            if api_parameter['DomainName']:
-                common = CommonParameter(self.account).get_dns_parameter()
-                result = UrlRequest(api_parameter).getResult(common)
-                if isinstance(result, str):
-                    result = json.loads(result)
-                    obj = result
-                else:
-                    print("result: ", result)
-                    continue
+        print("domainName: ", self.domainName)
+        api_parameter['DomainName'] = self.domainName if self.domainName else False
+        ret = {}
+        if api_parameter['DomainName']:
+            common = CommonParameter(self.account).get_dns_parameter()
+            result = UrlRequest(api_parameter).getResult(common)
+            if isinstance(result, str):
+                result = json.loads(result)
+                obj = result
             else:
-                ret = {}
-                ret['code'] = 400
-                ret['error'] = "there is no related domainName"
+                print("result: ", result)
+                ret['code'] = 401
+                ret['error'] = "there is no type str"
                 return ret
-            record_list = obj['DomainRecords']['Record']
-            if isinstance(record_list, list):
-                print("record_list: ", record_list)
-                if len(record_list) != 0:
-                    for record_dict in record_list:
-                        info_valid = {}
-                        info_valid['name'] = Domain.objects.get(domain_name=record_dict['DomainName'])
-                        info_valid['rr'] = record_dict['RR']
-                        info_valid['status'] = record_dict['Status']
-                        info_valid['value'] = record_dict['Value']
-                        info_valid['type'] = record_dict['Type']
-                        info_valid['lock'] = record_dict['Locked']
-                        info_valid['line'] = record_dict['Line']
-                        info_valid['ttl'] = str(record_dict['TTL'])
-                        self.insert_sql(**info_valid)
-                break
-            else:
-                print("domain_list is not a list")
+        else:
+            ret['code'] = 400
+            ret['error'] = "there is no related domainName"
+            return ret
+        record_list = obj['DomainRecords']['Record']
+        if isinstance(record_list, list):
+            print("record_list: ", record_list)
+            if len(record_list) != 0:
+                for record_dict in record_list:
+                    info_valid = {}
+                    info_valid['name'] = Domain.objects.get(domain_name=record_dict['DomainName'])
+                    info_valid['rr'] = record_dict['RR']
+                    info_valid['status'] = record_dict['Status']
+                    info_valid['value'] = record_dict['Value']
+                    info_valid['type'] = record_dict['Type']
+                    info_valid['lock'] = record_dict['Locked']
+                    info_valid['line'] = record_dict['Line']
+                    info_valid['ttl'] = str(record_dict['TTL'])
+                    self.insert_sql(**info_valid)
+        else:
+            print("domain_list is not a list")
 
     def get_date_time(self):
         dt_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -100,9 +98,8 @@ class DomainRecordsSyncView(LoginRequiredMixin, ListView):
 
     def sync_domain_record(self):
         try:
-            for obj in Yun_Account.objects.filter(name__isnull=False):
-                if obj.name != '东方星空':
-                    DomainRecordsUpdateSql(obj.name).update_sql()
+            for obj in Domain.objects.filter(domain_name__isnull=False):
+                DomainRecordsUpdateSql(obj.domain_name, obj.account.name).update_sql()
         except Exception as e:
             raise e
             print(e)
