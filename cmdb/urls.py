@@ -1,5 +1,6 @@
 from django.conf.urls import include, url
 from cmdb.views import *
+from cmdb import views
 
 
 urlpatterns = [
@@ -43,6 +44,7 @@ urlpatterns = [
         url(r'^(?P<pk>\d+)/asset_edit/', AssetUpdateView.as_view(), name='asset_edit'),
         url(r'^delete_entity/', AssetDeleteView.as_view(), name='asset_delete'),
         url(r'^asset_sync/', AssetSyncView.as_view(), name='asset_sync'),
+        url(r'^info/', views.api_asset_server_info, name='asset_get_server'),
     ])),
 
     # 密码表

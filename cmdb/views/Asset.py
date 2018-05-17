@@ -4,17 +4,21 @@
 # @Email   : tangrongwen@dfxkdata.com
 # @File    : Asset.py
 # @Software: dfxk-cmdb
-
+import paramiko
 from braces.views import *
 from django.contrib.auth.mixins import *
+from django.http import HttpResponse
 from django.urls import *
 from django.views.generic import *
 
 from cmdb.forms.Asset import AssetForm, AssetListFilterForm
 from cmdb.models.Asset import Assets
+from cmdb.models.Password import Password  as KeyPass
 from cmdb.models.YunAccount import Yun_Account
 from cobra_main.settings import PER_PAGE
 from django.db.models import Q
+
+from django.contrib.auth.models import User
 
 from aliyun_api.common.Aliyun import UrlRequest
 from aliyun_api.common.Parameter import CommonParameter
@@ -189,4 +193,60 @@ class AssetDeleteView(LoginRequiredMixin, JSONResponseMixin,
             return self.render_json_response({"success": True})
         else:
             return self.render_json_response({"success": False})
+
+class AssetServersInfo(object):
+
+    def __init__(self, id):
+        self.id = id
+
+    def get_asset_info(self):
+        obj = Assets.objects.get(id=self.id)
+        ip = obj.intral_ip
+        name = obj.vps_name
+        return {"ip": ip, "name": name}
+
+    def get_server_info(self, **kwargs):
+        info = self.get_asset_info()
+        obj = KeyPass.objects.get(ip_id=self.id)
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(info['ip'], obj.port, obj.user, obj.password)
+        for i,v in kwargs.items():
+            ret = ""
+            stdin, stdout, stderr = ssh.exec_command(v)
+            ret = stdout.readlines()
+            if len(ret) > 1:
+                info[i] = ret
+        ssh.close()
+        return info
+
+def api_asset_server_info(request):
+
+    id = request.GET.get('id')
+    type = request.GET.get('type')
+    user = request.GET.get('user')
+    ret = {}
+    try:
+        obj = User.objects.get(username=user)
+        if obj:
+            if isinstance(id, str):
+                if type == 'search':
+                    ret['code'] = 200
+                    kwargs = {"dockerServers": "docker ps",
+                              "javaServers": "ps -ef | grep -Ei '(/app|/tm|PPID)' | grep -Ei '(java|PPID)' | grep -v grep",
+                              "load": "uptime",
+                              "ports": "netstat -tlunp"
+                              }
+                    ret = AssetServersInfo(id).get_server_info(**kwargs)
+                else:
+                    ret['code'] = 400
+                    ret['message'] = "parames type is wrong"
+                return HttpResponse(json.dumps(ret), content_type="application/json")
+    except Exception as e:
+        ret['code'] = 403
+        ret['message'] = e
+        return HttpResponse(json.dumps(ret), content_type="application/json")
+
+
+
 

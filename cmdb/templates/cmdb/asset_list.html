@@ -29,6 +29,7 @@
             {% endif %}
         </div>
     </div>
+
 {% endblock %}
 
 {% block list_content %}
@@ -137,7 +138,8 @@
                 </td>
                 <td id="name{{ o.id }}">{{ o.vps_id }}</td>
                 <td id="name{{ o.id }}">{{ o.vps_name }}</td>
-                <td id="name{{ o.id }}">{{ o.intral_ip }}</td>
+                <td id="name{{ o.id }}"><a  href="#" onclick="get_intral_ip_info('{{ o.id }}')"
+                                           data-toggle="modal" data-target="#myModal">{{ o.intral_ip }}</a></td>
                 <td id="name{{ o.id }}">{{ o.intral_net }}</td>
                 <td id="name{{ o.id }}">{{ o.internet_ip}}</td>
                 <td id="name{{ o.id }}">{{ o.system_version}}</td>
@@ -174,7 +176,27 @@
         </tbody>
     </table>
 
-    <div id="tableExport" style=""></div>
+{#    <div id="tableExport" style=""></div>#}
+    <div class="modal fade" id="myModal"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false" aria-hidden="true">
+	   <div class="modal-dialog modal-lg" role="document" >
+		<div class="modal-content" >
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="false">
+					&times;
+				</button>
+				<h4 class="modal-title" id="myModalLabel">
+					服务器不可连接: 404
+				</h4>
+			</div>
+			<div class="modal-body">
+				请求失败, 请检查
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+			</div>
+		</div><!-- /.modal-content -->
+	   </div><!-- /.modal -->
+    </div>
 
     <script>
         $(document).ready(function () {
@@ -198,5 +220,49 @@
                 }
             })
         }//confirm_delete
+
+        function get_intral_ip_info(id) {
+            console.log(id)
+            $.ajax({
+                type: "GET",
+                url: "/frontend/cmdb/asset/info/",
+                data: {id: id, type: 'search', user: "{{ request.user }}" },
+                dataType: "json",
+                success: function (data) {
+                    console.log(typeof(data))
+                    console.log(data.ip)
+                    console.log("{{ request.user }}")
+                        {#obj = eval('(' + data + ')');#}
+                    document.getElementById("myModalLabel").innerHTML="<h2>服务器IP：" + data.ip + "</h2>"
+                    html = ""
+                    if(data.load){
+                        html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">服务器负载</font></p><br>" +
+                                "<pre>" + data.load + "</pre><br>"
+                    }
+                    if(data.ports){
+                        html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">服务端口</font></p><br>" +
+                                "<pre>" + data.ports + "</pre><br>"
+                    }
+                    if(data.dockerServers){
+                        html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">docker服务进程列表</font></p><br>" +
+                                "<pre>" + data.dockerServers + "</pre><br>"
+                    }
+                    if(data.javaServers){
+                        html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">java服务进程列表</font></p><br>" +
+                              "<pre>" + data.javaServers + "</pre><br>"
+                    }
+                    $(".modal-body").html(html)
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                       console.log(XMLHttpRequest.status);
+                       console.log(XMLHttpRequest.readyState);
+                       console.log(textStatus);
+                       document.getElementById("myModalLabel").innerHTML="服务器不可连接"
+                       $(".modal-body").html("请求失败, 请检查<br><pre>" + XMLHttpRequest.responseText + '</pre>')
+
+                },
+            })
+
+        }
     </script>
 {% endblock %}

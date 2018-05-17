@@ -16,8 +16,8 @@ class Password(BaseModel):
     password = models.CharField(max_length=255, null=True, blank=True,verbose_name='密码')
     comment = models.CharField(max_length=255, null=True, blank=True,verbose_name='备注')
 
-    def __repr__(self):
-        return '<Project(name=%s)>' % self.port
+    # def __repr__(self):
+    #     return '<Project(name=%s)>' % self.port
 
     def __str__(self):
         return self.port
