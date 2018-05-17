@@ -185,11 +185,11 @@
 					&times;
 				</button>
 				<h4 class="modal-title" id="myModalLabel">
-					服务器不可连接: 404
+					服务器:
 				</h4>
 			</div>
 			<div class="modal-body">
-				请求失败, 请检查
+				正在请求服务器信息,请耐心等待
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
@@ -229,10 +229,6 @@
                 data: {id: id, type: 'search', user: "{{ request.user }}" },
                 dataType: "json",
                 success: function (data) {
-                    console.log(typeof(data))
-                    console.log(data.ip)
-                    console.log("{{ request.user }}")
-                        {#obj = eval('(' + data + ')');#}
                     document.getElementById("myModalLabel").innerHTML="<h2>服务器：" + data.name + " " + data.ip + "</h2>"
                     html = ""
                     if(data.load){
