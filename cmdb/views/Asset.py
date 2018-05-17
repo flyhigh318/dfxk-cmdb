@@ -217,6 +217,9 @@ class AssetServersInfo(object):
             ret = stdout.readlines()
             if len(ret) > 1:
                 info[i] = ret
+            elif len(ret) == 1:
+                if i == 'load':
+                    info[i] = ret
         ssh.close()
         return info
 
