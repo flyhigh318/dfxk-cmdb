@@ -233,7 +233,7 @@
                     console.log(data.ip)
                     console.log("{{ request.user }}")
                         {#obj = eval('(' + data + ')');#}
-                    document.getElementById("myModalLabel").innerHTML="<h2>服务器IP：" + data.ip + "</h2>"
+                    document.getElementById("myModalLabel").innerHTML="<h2>服务器：" + data.name + " " + data.ip + "</h2>"
                     html = ""
                     if(data.load){
                         html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">服务器负载</font></p><br>" +
