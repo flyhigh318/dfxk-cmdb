@@ -234,6 +234,7 @@ def api_asset_server_info(request):
         if obj:
             if isinstance(id, str):
                 if type == 'search':
+                    ret = {}
                     ret['code'] = 200
                     kwargs = {"dockerServers": "docker ps",
                               "javaServers": "ps -ef | grep -Ei '(/app|/tm|PPID)' | grep -Ei '(java|PPID)' | grep -v grep",
@@ -247,7 +248,7 @@ def api_asset_server_info(request):
                 return HttpResponse(json.dumps(ret), content_type="application/json")
     except Exception as e:
         ret['code'] = 403
-        ret['message'] = e
+        ret['error'] = str(e)
         return HttpResponse(json.dumps(ret), content_type="application/json")
 
 

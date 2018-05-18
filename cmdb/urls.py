@@ -98,4 +98,10 @@ urlpatterns = [
         url(r'^delete_entity/', DomainRecordsDeleteView.as_view(), name='record_delete'),
         url(r'^record_sync/', DomainRecordsSyncView.as_view(), name='record_sync'),
     ])),
+
+    # api
+    url(r'^api/', include([
+        url(r'^domain/records/info/', views.api_get_assets, name='api_get_assets'),
+        url(r'^asset/info/', views.api_asset_server_info, name='asset_get_server'),
+    ])),
 ]

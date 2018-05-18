@@ -225,15 +225,21 @@
             console.log(id)
             $.ajax({
                 type: "GET",
-                url: "/frontend/cmdb/asset/info/",
+                url: "/frontend/cmdb/api/asset/info/",
                 data: {id: id, type: 'search', user: "{{ request.user }}" },
                 dataType: "json",
                 success: function (data) {
-                    document.getElementById("myModalLabel").innerHTML="<h2>服务器：" + data.name + " " + data.ip + "</h2>"
-                    html = ""
+                    if(data.name) {
+                        document.getElementById("myModalLabel").innerHTML = "<h2>服务器：" + data.name + "<--->" + data.ip + "</h2>"
+                        html = ""
+                    }
                     if(data.load){
                         html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">服务器负载</font></p><br>" +
                                 "<pre>" + data.load + "</pre><br>"
+                    }
+                    if(data.disk){
+                        html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">服务器磁盘空间</font></p><br>" +
+                                "<pre>" + data.disk + "</pre><br>"
                     }
                     if(data.ports){
                         html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">服务端口</font></p><br>" +
@@ -247,7 +253,13 @@
                         html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">java服务进程列表</font></p><br>" +
                               "<pre>" + data.javaServers + "</pre><br>"
                     }
+                    if(data.error){
+                        document.getElementById("myModalLabel").innerHTML = "<h2>服务器：" + "</h2>"
+                        html = "<p><font size=\"5\" face=\"arial\" color=\"black\">错误信息:</font></p><br>" +
+                              "<pre>" + data.error + "</pre><br>"
+                    }
                     $(".modal-body").html(html)
+                    data.error = ""
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown) {
                        console.log(XMLHttpRequest.status);
