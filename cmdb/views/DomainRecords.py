@@ -137,18 +137,22 @@ class DomainRecordsView(LoginRequiredMixin, OrderableListMixin, ListView):
 
         if search:
             try:
-                m, n = re.search(r'(.*)\.(.*)', search, re.I|re.M).groups()
-                if not re.search('com',m) and re.search('com', n):
-                    print("m: ", m)
-                    print("n: ", n)
-                    search_list = re.split(r'\.', search)
-                    domain = ".".join(search_list[-2:])
-                    num_del_tail_2_args = len(search_list) -2
-                    rr = ".".join(search_list[0: num_del_tail_2_args])
-                    result_list = Domain_Records.objects.filter(name__domain_name__icontains=domain,
-                                                                rr=rr)
-                    return result_list
+                k = re.search(r'(.*)\.(.*)', search, re.I|re.M)
+                if k:
+                    m, n = k.groups()
+                    if not re.search('com',m) and re.search('com', n):
+                        search_list = re.split(r'\.', search)
+                        domain = ".".join(search_list[-2:])
+                        num_del_tail_2_args = len(search_list) -2
+                        rr = ".".join(search_list[0: num_del_tail_2_args])
+                        result_list = Domain_Records.objects.filter(name__domain_name__icontains=domain,
+                                                                    rr=rr)
 
+                    else:
+                        result_list = Domain_Records.objects.filter(Q(rr__icontains=search) |
+                                                                    Q(value__icontains=search) |
+                                                                    Q(name__domain_name__icontains=search) |
+                                                                    Q(comment__icontains=search))
                 else:
                     result_list = Domain_Records.objects.filter(Q(rr__icontains=search)|
                                                 Q(status__icontains=search)|
@@ -159,7 +163,7 @@ class DomainRecordsView(LoginRequiredMixin, OrderableListMixin, ListView):
                                                 Q(ttl__icontains=search)|
                                                 Q(name__domain_name__icontains=search)|
                                                 Q(comment__icontains=search))
-                    return result_list
+                return result_list
             except Exception as e:
                 print(e)
 
