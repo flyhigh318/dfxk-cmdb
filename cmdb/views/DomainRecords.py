@@ -33,9 +33,11 @@ class DomainRecordsUpdateSql(object):
 
     def insert_sql(self, **kwargs):
         if Domain_Records.objects.filter(rr=kwargs['rr'],
+                                         name__domain_name=kwargs['name'],
                                          type=kwargs['type'],
                                          value=kwargs['value']):
             Domain_Records.objects.filter(rr=kwargs['rr'],
+                                          name__domain_name=kwargs['name'],
                                           type=kwargs['type'],
                                           value=kwargs['value']
                                           ).update(**kwargs, update_time=timezone.now())
