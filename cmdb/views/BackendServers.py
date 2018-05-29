@@ -151,9 +151,8 @@ class BackendServersUpdateSql(object):
             statu = u'正常'
         return statu
 
-
-class BackendServersSyncView(LoginRequiredMixin, ListView):
-    model = Lb
+class BackendServersView(LoginRequiredMixin, OrderableListMixin, ListView):
+    model = Backend_Server
     paginate_by = PER_PAGE
     template_name = listview_template
     context_object_name = 'result_list'
@@ -169,27 +168,7 @@ class BackendServersSyncView(LoginRequiredMixin, ListView):
                     for loadBalancerId in lb_id_list:
                         instance.update_sql(loadBalancerId)
         except Exception as e:
-            raise (e)
-
-    def get_queryset(self):
-        result_list = Backend_Server.objects.all()
-        self.sync_backend_servers()
-        return result_list
-
-    def get_context_data(self, **kwargs):
-        context = super(BackendServersSyncView, self).get_context_data(**kwargs)
-        context['order_by'] = self.request.GET.get('order_by', '')
-        context['ordering'] = self.request.GET.get('ordering', 'asc')
-        context['filter_form'] = BackendServersListFilterForm(self.request.GET)
-        return context
-
-class BackendServersView(LoginRequiredMixin, OrderableListMixin, ListView):
-    model = Backend_Server
-    paginate_by = PER_PAGE
-    template_name = listview_template
-    context_object_name = 'result_list'
-    orderable_columns_default = 'id'
-    orderable_columns = ['name', 'create_time', 'update_time']
+            print(e)
 
 
     def get_queryset(self):
@@ -197,6 +176,9 @@ class BackendServersView(LoginRequiredMixin, OrderableListMixin, ListView):
         search = self.request.GET.get('name')
         order_by = self.request.GET.get('order_by')
         ordering = self.request.GET.get('ordering')
+        syncAliyun = self.request.GET.get("onclick")
+        if syncAliyun == 'syncAliyun':
+            self.sync_backend_servers()
 
         if search:
             try:

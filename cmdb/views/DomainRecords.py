@@ -92,7 +92,7 @@ class DomainRecordsUpdateSql(object):
         dt_str = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         return dt_str
 
-class DomainRecordsSyncView(LoginRequiredMixin, ListView):
+class DomainRecordsView(LoginRequiredMixin, OrderableListMixin, ListView):
     model = Domain_Records
     paginate_by = PER_PAGE
     template_name = listview_template
@@ -110,32 +110,12 @@ class DomainRecordsSyncView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         result_list = Domain_Records.objects.all()
-        action = self.request.GET.get("paginate_by")
-        if not action:
-           self.sync_domain_record()
-        return result_list
-
-    def get_context_data(self, **kwargs):
-        context = super(DomainRecordsSyncView, self).get_context_data(**kwargs)
-        context['order_by'] = self.request.GET.get('order_by', '')
-        context['ordering'] = self.request.GET.get('ordering', 'asc')
-        context['filter_form'] = DomainRecordsListFilterForm(self.request.GET)
-        return context
-
-class DomainRecordsView(LoginRequiredMixin, OrderableListMixin, ListView):
-    model = Domain_Records
-    paginate_by = PER_PAGE
-    template_name = listview_template
-    context_object_name = 'result_list'
-    orderable_columns_default = 'id'
-    orderable_columns = ['name', 'create_time', 'update_time']
-
-
-    def get_queryset(self):
-        result_list = Domain_Records.objects.all()
         search = self.request.GET.get('name')
         order_by = self.request.GET.get('order_by')
         ordering = self.request.GET.get('ordering')
+        syncAliyun = self.request.GET.get("onclick")
+        if syncAliyun == 'syncAliyun':
+            self.sync_domain_record()
 
         if search:
             try:
@@ -149,7 +129,6 @@ class DomainRecordsView(LoginRequiredMixin, OrderableListMixin, ListView):
                         rr = ".".join(search_list[0: num_del_tail_2_args])
                         result_list = Domain_Records.objects.filter(name__domain_name__icontains=domain,
                                                                     rr=rr)
-
                     else:
                         result_list = Domain_Records.objects.filter(Q(rr__icontains=search) |
                                                                     Q(value__icontains=search) |
@@ -168,7 +147,6 @@ class DomainRecordsView(LoginRequiredMixin, OrderableListMixin, ListView):
                 return result_list
             except Exception as e:
                 print(e)
-
 
         if order_by:
             if ordering == 'desc':

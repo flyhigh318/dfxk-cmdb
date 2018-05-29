@@ -77,7 +77,7 @@ class DomainsUpdateSql(object):
         else:
             print("domain_list is not a list")
 
-class DomainsSyncView(LoginRequiredMixin, ListView):
+class DomainsView(LoginRequiredMixin, OrderableListMixin, ListView):
     model = Domain
     paginate_by = PER_PAGE
     template_name = listview_template
@@ -93,32 +93,15 @@ class DomainsSyncView(LoginRequiredMixin, ListView):
         except Exception as e:
             print(e)
 
-    def get_queryset(self):
-        result_list = Domain.objects.all()
-        self.sync_domain()
-        return result_list
-
-    def get_context_data(self, **kwargs):
-        context = super(DomainsSyncView, self).get_context_data(**kwargs)
-        context['order_by'] = self.request.GET.get('order_by', '')
-        context['ordering'] = self.request.GET.get('ordering', 'asc')
-        context['filter_form'] = DomainListFilterForm(self.request.GET)
-        return context
-
-class DomainsView(LoginRequiredMixin, OrderableListMixin, ListView):
-    model = Domain
-    paginate_by = PER_PAGE
-    template_name = listview_template
-    context_object_name = 'result_list'
-    orderable_columns_default = 'id'
-    orderable_columns = ['name', 'create_time', 'update_time']
-
 
     def get_queryset(self):
         result_list = Domain.objects.all()
         search = self.request.GET.get('name')
         order_by = self.request.GET.get('order_by')
         ordering = self.request.GET.get('ordering')
+        syncAliyun = self.request.GET.get("onclick")
+        if syncAliyun == 'syncAliyun':
+            self.sync_domain()
 
         if search:
             try:

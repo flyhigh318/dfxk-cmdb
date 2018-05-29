@@ -43,7 +43,7 @@ urlpatterns = [
         url(r'^asset_add/', AssetCreateView.as_view(), name='asset_add'),
         url(r'^(?P<pk>\d+)/asset_edit/', AssetUpdateView.as_view(), name='asset_edit'),
         url(r'^delete_entity/', AssetDeleteView.as_view(), name='asset_delete'),
-        url(r'^asset_sync/', AssetSyncView.as_view(), name='asset_sync'),
+        # url(r'^asset_sync/', AssetSyncView.as_view(), name='asset_sync'),
         url(r'^info/', views.api_asset_server_info, name='asset_get_server'),
     ])),
 
@@ -69,7 +69,6 @@ urlpatterns = [
         url(r'^lb_add/', LbCreateView.as_view(), name='Lb_add'),
         url(r'^(?P<pk>\d+)/lb_edit/', LbUpdateView.as_view(), name='lb_edit'),
         url(r'^delete_entity/', LbDeleteView.as_view(), name='lb_delete'),
-        url(r'^lb_sync/', LbSyncView.as_view(), name='asset_sync'),
     ])),
 
     # 负载均衡后端服务器
@@ -78,7 +77,6 @@ urlpatterns = [
         url(r'^backend_servers_add/', BackendServersCreateView.as_view(), name='backend_servers_add'),
         url(r'^(?P<pk>\d+)/backend_servers_edit/', BackendServersUpdateView.as_view(), name='backend_servers_edit'),
         url(r'^delete_entity/', BackendServersDeleteView.as_view(), name='backend_servers_delete'),
-        url(r'^backend_servers_sync/', BackendServersSyncView.as_view(), name='backend_servers_sync'),
     ])),
 
     # 域名信息
@@ -87,7 +85,6 @@ urlpatterns = [
         url(r'^domain_add/', DomainsCreateView.as_view(), name='domains_add'),
         url(r'^(?P<pk>\d+)/domain_edit/', DomainsUpdateView.as_view(), name='domains_edit'),
         url(r'^delete_entity/', DomainsDeleteView.as_view(), name='domains_delete'),
-        url(r'^domain_sync/', DomainsSyncView.as_view(), name='domains_sync'),
     ])),
 
     # 域名记录
@@ -96,7 +93,6 @@ urlpatterns = [
         url(r'^record_add/', DomainRecordsCreateView.as_view(), name='record_add'),
         url(r'^(?P<pk>\d+)/record_edit/', DomainRecordsUpdateView.as_view(), name='record_edit'),
         url(r'^delete_entity/', DomainRecordsDeleteView.as_view(), name='record_delete'),
-        url(r'^record_sync/', DomainRecordsSyncView.as_view(), name='record_sync'),
     ])),
 
     # api

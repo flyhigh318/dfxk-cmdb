@@ -8,8 +8,10 @@ import paramiko
 from braces.views import *
 from django.contrib.auth.mixins import *
 from django.http import HttpResponse
+from django.shortcuts import render_to_response
 from django.urls import *
 from django.views.generic import *
+from django.views import View
 
 from cmdb.forms.Asset import AssetForm, AssetListFilterForm
 from cmdb.models.Asset import Assets
@@ -97,9 +99,8 @@ class AssetEcsUpdateSql(object):
         elif self.account == 'tiantianjiekuan':
             intral_net = '172.18.144.0/20'
         return intral_net
-
-
-class AssetSyncView(LoginRequiredMixin, ListView):
+    
+class AssetView(LoginRequiredMixin, OrderableListMixin, ListView):
     model = Assets
     paginate_by = PER_PAGE
     template_name = listview_template
@@ -117,29 +118,12 @@ class AssetSyncView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         result_list = Assets.objects.all()
-        self.sync_asset()
-        return result_list
-
-    def get_context_data(self, **kwargs):
-        context = super(AssetSyncView, self).get_context_data(**kwargs)
-        context['order_by'] = self.request.GET.get('order_by', '')
-        context['ordering'] = self.request.GET.get('ordering', 'asc')
-        context['filter_form'] = AssetListFilterForm(self.request.GET)
-        return context
-    
-class AssetView(LoginRequiredMixin, OrderableListMixin, ListView):
-    model = Assets
-    paginate_by = PER_PAGE
-    template_name = listview_template
-    context_object_name = 'result_list'
-    orderable_columns_default = 'id'
-    orderable_columns = ['name', 'create_time', 'update_time']
-
-    def get_queryset(self):
-        result_list = Assets.objects.all()
         search = self.request.GET.get('name')
         order_by = self.request.GET.get('order_by')
         ordering = self.request.GET.get('ordering')
+        syncAliyun = self.request.GET.get("onclick")
+        if syncAliyun == 'syncAliyun':
+           self.sync_asset()
         if search:
             result_list = Assets.objects.filter(Q(intral_ip__icontains=search)|
                                                 Q(vps_id__icontains=search)|

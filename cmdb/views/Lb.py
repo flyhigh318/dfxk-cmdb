@@ -117,8 +117,7 @@ class LbUpdateSql(object):
             lb_id.append(obj['LoadBalancerId'])
         return lb_id
 
-
-class LbSyncView(LoginRequiredMixin, ListView):
+class LbView(LoginRequiredMixin, OrderableListMixin, ListView):
     model = Lb
     paginate_by = PER_PAGE
     template_name = listview_template
@@ -139,31 +138,12 @@ class LbSyncView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         result_list = Lb.objects.all()
-        self.sync_lb()
-        return result_list
-
-    def get_context_data(self, **kwargs):
-        context = super(LbSyncView, self).get_context_data(**kwargs)
-        context['order_by'] = self.request.GET.get('order_by', '')
-        context['ordering'] = self.request.GET.get('ordering', 'asc')
-        context['filter_form'] = LbListFilterForm(self.request.GET)
-        return context
-
-class LbView(LoginRequiredMixin, OrderableListMixin, ListView):
-    model = Lb
-    paginate_by = PER_PAGE
-    template_name = listview_template
-    context_object_name = 'result_list'
-    orderable_columns_default = 'id'
-    orderable_columns = ['name', 'create_time', 'update_time']
-
-
-    def get_queryset(self):
-        result_list = Lb.objects.all()
         search = self.request.GET.get('name')
-        # print('test search: ----> ', search)
         order_by = self.request.GET.get('order_by')
         ordering = self.request.GET.get('ordering')
+        syncAliyun = self.request.GET.get("onclick")
+        if syncAliyun == 'syncAliyun':
+            self.sync_lb()
 
         if search:
             try:
