@@ -178,7 +178,7 @@
 
 {#    <div id="tableExport" style=""></div>#}
     <div class="modal fade" id="myModal"   tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-backdrop="false" aria-hidden="true">
-	   <div class="modal-dialog modal-lg" role="document" style="height:1800px; overflow:scroll" >
+	   <div class="modal-dialog modal-lg" role="document" style="width:980px" >
 		<div class="modal-content" >
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="false">
@@ -188,8 +188,11 @@
 					服务器:
 				</h4>
 			</div>
-			<div class="modal-body">
-				正在请求服务器信息,请耐心等待
+			<div class="modal-body" >
+                <div id="showcontent" class="ztree" style="height:600px;overflow:auto; ">
+                    正在请求服务器信息,请耐心等待
+                </div>
+
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
@@ -258,7 +261,7 @@
                         html = "<p><font size=\"5\" face=\"arial\" color=\"black\">错误信息:</font></p><br>" +
                               "<pre>" + data.error + "</pre><br>"
                     }
-                    $(".modal-body").html(html)
+                    $("#showcontent").html(html)
                     data.error = ""
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown) {
