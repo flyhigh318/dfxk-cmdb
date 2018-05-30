@@ -130,7 +130,7 @@ class AssetView(LoginRequiredMixin, OrderableListMixin, ListView):
                                                 Q(vps_name__icontains=search)|
                                                 Q(intral_net__icontains=search)|
                                                 Q(internet_ip__icontains=search)|
-                                                Q(system_version__icontains=search))
+                                                Q(system_version__icontains=search)).distinct()
             return  result_list
         if order_by:
             if ordering == 'desc':

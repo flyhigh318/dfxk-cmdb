@@ -123,7 +123,7 @@
                 </td>
                 <td id="name{{ o.id }}">
                     {% for oo in o.server_id.all %}
-                        {{ oo.intral_ip}}<br>
+                        <a href="/frontend/cmdb/asset/?name={{ oo.intral_ip }}">{{ oo.intral_ip}}</a><br>
                     {% endfor %}
                 </td>
                 <td id="name{{ o.id }}">{{ o.weight }}</td>

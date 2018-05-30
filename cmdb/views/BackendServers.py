@@ -189,7 +189,7 @@ class BackendServersView(LoginRequiredMixin, OrderableListMixin, ListView):
                                                             Q(listen_ports__icontains=search)|
                                                             Q(weight__icontains=search)|
                                                             Q(status__icontains=search)|
-                                                            Q(comment__icontains=search))
+                                                            Q(comment__icontains=search)).distinct()
                 return result_list
             except Exception as e:
                 print(e)
