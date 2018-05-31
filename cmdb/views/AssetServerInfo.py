@@ -29,7 +29,8 @@ class AssetServerInfoView(View):
                 cmd_dict = {"dockerServers": "docker ps",
                           "javaServers": "ps -ef | grep -Ei '(/app|/tm|PPID)' | grep -Ei '(java|PPID)' | grep -v grep",
                           "load": "uptime",
-                          "ports": "netstat -tlunp"
+                          "ports": "netstat -tlunp",
+                          "disk": "df -lh"
                           }
                 ret = AssetServersInfo(id).get_server_info(**cmd_dict)
             else:
