@@ -12,7 +12,8 @@
               var data = {{ ret|safe }}
               if(data.name) {
                   $(".ibox-title").remove("")
-                  document.getElementById("showtitle").innerHTML = "<h2>服务器：" + data.name + "<--->" + data.ip + "</h2>"
+                  $("#paginate_by").remove("")
+                  document.getElementById("showtitle").innerHTML = "<h2>服务器：" + data.name + " <---> " + data.ip + "</h2>"
                   html = ""
               }
               if(data.load){

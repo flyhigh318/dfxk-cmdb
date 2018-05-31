@@ -23,22 +23,25 @@ class AssetServerInfoView(View):
         id = request.GET.get("id")
         type = request.GET.get("type")
         ret = {}
-        if isinstance(id, str):
-            if type == 'search':
-                ret['code'] = 200
-                cmd_dict = {"dockerServers": "docker ps",
-                          # "javaServers": "ps -ef | grep -Ei '(/app|/tm|PPID)' | grep -Ei '(java|PPID)' | grep -v grep",
-                          "javaServers": "ps -ef | grep -Ei '(java|PPID)' |  grep -v grep",
-                          "load": "uptime",
-                          "ports": "netstat -tlunp",
-                          "disk": "df -lh"
-                          }
-                ret = AssetServersInfo(id).get_server_info(**cmd_dict)
-            else:
-                ret['code'] = 400
-                ret['message'] = "parames type is wrong"
-
-        return render(request, 'cmdb/asset_server_list.html', {'ret': json.dumps(ret)})
+        try:
+            if isinstance(id, str):
+                if type == 'search':
+                    ret['code'] = 200
+                    cmd_dict = { "dockerServers": "docker ps",
+                                 "javaServers": "ps -ef | grep -Ei '(java|PPID)' |  grep -v grep",
+                                 "load": "uptime",
+                                 "ports": "netstat -tlunp",
+                                 "disk": "df -lh"
+                              }
+                    ret = AssetServersInfo(id).get_server_info(**cmd_dict)
+                else:
+                    ret['code'] = 400
+                    ret['error'] = "parames type is wrong"
+        except Exception as e:
+            ret['code'] = 405
+            ret['error'] = str(e)
+        finally:
+            return render(request, 'cmdb/asset_server_list.html', {'ret': json.dumps(ret)})
 
 class AssetServersInfo(object):
 
