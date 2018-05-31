@@ -27,7 +27,8 @@ class AssetServerInfoView(View):
             if type == 'search':
                 ret['code'] = 200
                 cmd_dict = {"dockerServers": "docker ps",
-                          "javaServers": "ps -ef | grep -Ei '(/app|/tm|PPID)' | grep -Ei '(java|PPID)' | grep -v grep",
+                          # "javaServers": "ps -ef | grep -Ei '(/app|/tm|PPID)' | grep -Ei '(java|PPID)' | grep -v grep",
+                          "javaServers": "ps -ef | grep -Ei '(java|PPID)' |  grep -v grep",
                           "load": "uptime",
                           "ports": "netstat -tlunp",
                           "disk": "df -lh"
