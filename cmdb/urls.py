@@ -43,7 +43,7 @@ urlpatterns = [
         url(r'^asset_add/', AssetCreateView.as_view(), name='asset_add'),
         url(r'^(?P<pk>\d+)/asset_edit/', AssetUpdateView.as_view(), name='asset_edit'),
         url(r'^delete_entity/', AssetDeleteView.as_view(), name='asset_delete'),
-        # url(r'^asset_sync/', AssetSyncView.as_view(), name='asset_sync'),
+        url(r'^server_info/', AssetServerInfoView.as_view(), name='asset_server_info'),
         url(r'^info/', views.api_asset_server_info, name='asset_get_server'),
     ])),
 

@@ -1,0 +1,46 @@
+{% extends 'common/basic_list.html' %}
+
+{% block list_title %}
+   资产
+{% endblock %}
+
+{% block list_filter %}
+    <div id="showtitle"></div>
+    <div id="showcontent"></div>
+    <script>
+        $(document).ready(function () {
+              var data = {{ ret|safe }}
+              if(data.name) {
+                  $(".ibox-title").remove("")
+                  document.getElementById("showtitle").innerHTML = "<h2>服务器：" + data.name + "<--->" + data.ip + "</h2>"
+                  html = ""
+              }
+              if(data.load){
+                  html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">服务器负载</font></p><br>" +
+                          "<pre>" + data.load + "</pre><br>"
+              }
+              if(data.disk){
+                  html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">服务器磁盘空间</font></p><br>" +
+                          "<pre>" + data.disk + "</pre><br>"
+              }
+              if(data.ports){
+                  html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">服务端口</font></p><br>" +
+                          "<pre>" + data.ports + "</pre><br>"
+              }
+              if(data.dockerServers){
+                  html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">docker服务进程列表</font></p><br>" +
+                          "<pre>" + data.dockerServers + "</pre><br>"
+              }
+              if(data.javaServers){
+                  html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">java服务进程列表</font></p><br>" +
+                        "<pre>" + data.javaServers + "</pre><br>"
+              }
+              if(data.error){
+                  document.getElementById("showtitle").innerHTML = "<h2>服务器：" + "</h2>"
+                  html = "<p><font size=\"5\" face=\"arial\" color=\"black\">错误信息:</font></p><br>" +
+                        "<pre>" + data.error + "</pre><br>"
+              }
+              $("#showcontent").html(html)
+        });
+    </script>
+{% endblock %}

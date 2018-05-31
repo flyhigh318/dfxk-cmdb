@@ -138,8 +138,9 @@
                 </td>
                 <td id="name{{ o.id }}">{{ o.vps_id }}</td>
                 <td id="name{{ o.id }}">{{ o.vps_name }}</td>
-                <td id="name{{ o.id }}"><a  href="#" onclick="get_intral_ip_info('{{ o.id }}')"
-                                           data-toggle="modal" data-target="#myModal">{{ o.intral_ip }}</a></td>
+                <td id="name{{ o.id }}"><a  href="/frontend/cmdb/asset/server_info/?id={{ o.id }}&type=search" >{{ o.intral_ip }}</a></td>
+{#                <td id="name{{ o.id }}"><a  href="#" onclick="get_intral_ip_info('{{ o.id }}')"#}
+{#                                           data-toggle="modal" data-target="#myModal">{{ o.intral_ip }}</a></td>#}
                 <td id="name{{ o.id }}">{{ o.intral_net }}</td>
                 <td id="name{{ o.id }}">{{ o.internet_ip}}</td>
                 <td id="name{{ o.id }}">{{ o.system_version}}</td>
