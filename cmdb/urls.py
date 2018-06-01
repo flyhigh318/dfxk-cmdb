@@ -65,8 +65,8 @@ urlpatterns = [
 
     # 负载均衡LB
     url(r'^lb/', include([
-        url(r'^$', LbView.as_view(), name='Lb_list'),
-        url(r'^lb_add/', LbCreateView.as_view(), name='Lb_add'),
+        url(r'^$', LbView.as_view(), name='lb_list'),
+        url(r'^lb_add/', LbCreateView.as_view(), name='lb_add'),
         url(r'^(?P<pk>\d+)/lb_edit/', LbUpdateView.as_view(), name='lb_edit'),
         url(r'^delete_entity/', LbDeleteView.as_view(), name='lb_delete'),
     ])),

@@ -38,7 +38,9 @@ class BackendServersUpdateSql(object):
 
     def insert_sql(self, kwargs):
         if Backend_Server.objects.filter(lb__ip_address=kwargs['ip_address']):
-            a_old = Assets.objects.filter(assets__comment=kwargs['comment'])
+            # 若SLB名称修改了，会删除数据库相关记录，重新创建一条记录
+            # a_old = Assets.objects.filter(assets__comment=kwargs['comment'])
+            a_old = Assets.objects.filter(assets__lb__name=kwargs['comment'])
             if a_old:
                 Backend_Server.objects.filter(lb__ip_address=kwargs['ip_address']).update(
                      lb=Lb.objects.get(load_balancer_id=kwargs['load_balancer_id']),
