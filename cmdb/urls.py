@@ -81,18 +81,18 @@ urlpatterns = [
 
     # 域名信息
     url(r'^domain/', include([
-        url(r'^$', DomainsView.as_view(), name='domains_list'),
-        url(r'^domain_add/', DomainsCreateView.as_view(), name='domains_add'),
-        url(r'^(?P<pk>\d+)/domain_edit/', DomainsUpdateView.as_view(), name='domains_edit'),
-        url(r'^delete_entity/', DomainsDeleteView.as_view(), name='domains_delete'),
+        url(r'^$', DomainsView.as_view(), name='domain_list'),
+        url(r'^domain_add/', DomainsCreateView.as_view(), name='domain_add'),
+        url(r'^(?P<pk>\d+)/domain_edit/', DomainsUpdateView.as_view(), name='domain_edit'),
+        url(r'^delete_entity/', DomainsDeleteView.as_view(), name='domain_delete'),
     ])),
 
     # 域名记录
     url(r'^record/', include([
-        url(r'^$', DomainRecordsView.as_view(), name='record_list'),
-        url(r'^record_add/', DomainRecordsCreateView.as_view(), name='record_add'),
-        url(r'^(?P<pk>\d+)/record_edit/', DomainRecordsUpdateView.as_view(), name='record_edit'),
-        url(r'^delete_entity/', DomainRecordsDeleteView.as_view(), name='record_delete'),
+        url(r'^$', DomainRecordsView.as_view(), name='domain_record_list'),
+        url(r'^record_add/', DomainRecordsCreateView.as_view(), name='domain_record_add'),
+        url(r'^(?P<pk>\d+)/record_edit/', DomainRecordsUpdateView.as_view(), name='domain_record_edit'),
+        url(r'^delete_entity/', DomainRecordsDeleteView.as_view(), name='domain_record_delete'),
     ])),
 
     # api
