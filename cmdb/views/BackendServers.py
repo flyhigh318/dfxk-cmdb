@@ -38,27 +38,47 @@ class BackendServersUpdateSql(object):
 
     def insert_sql(self, kwargs):
         if Backend_Server.objects.filter(lb__ip_address=kwargs['ip_address']):
-            Backend_Server.objects.filter(lb__ip_address=kwargs['ip_address']).update(
-                 lb=Lb.objects.get(load_balancer_id=kwargs['load_balancer_id']),
-                 status=kwargs['status'],
-                 weight=kwargs['weight'],
-                 listen_ports=kwargs['listen_ports'],
-                 update_time=timezone.now()
-            )
-            #移除多对多关系对象数据
-            bs = Backend_Server.objects.get(lb__ip_address=kwargs['ip_address'])
             a_old = Assets.objects.filter(assets__comment=kwargs['comment'])
             if a_old:
+                Backend_Server.objects.filter(lb__ip_address=kwargs['ip_address']).update(
+                     lb=Lb.objects.get(load_balancer_id=kwargs['load_balancer_id']),
+                     status=kwargs['status'],
+                     weight=kwargs['weight'],
+                     listen_ports=kwargs['listen_ports'],
+                     update_time=timezone.now()
+                )
+                #移除多对多关系对象数据
+                bs = Backend_Server.objects.get(lb__ip_address=kwargs['ip_address'])
+                # a_old = Assets.objects.filter(assets__comment=kwargs['comment'])
                 for obj in a_old:
                     bs.server_id.remove(obj)
-            #更新多对多关系对象数据
-            if isinstance(kwargs['vps_id_list'], str):
-                a = Assets.objects.get(vps_id=kwargs['vps_id_list'])
-                bs.server_id.add(a)
-            elif isinstance(kwargs['vps_id_list'], list):
-                a = Assets.objects.filter(vps_id__in=kwargs['vps_id_list'])
-                for obj in a:
-                    bs.server_id.add(obj)
+                #更新多对多关系对象数据
+                if isinstance(kwargs['vps_id_list'], str):
+                    a = Assets.objects.get(vps_id=kwargs['vps_id_list'])
+                    bs.server_id.add(a)
+                elif isinstance(kwargs['vps_id_list'], list):
+                    a = Assets.objects.filter(vps_id__in=kwargs['vps_id_list'])
+                    for obj in a:
+                        bs.server_id.add(obj)
+            else:
+                #删除匹配不到（已修改的SLB备注名）的记录，重新创建。
+                Backend_Server.objects.filter(lb__ip_address=kwargs['ip_address']).delete()
+                bs = Backend_Server(
+                    lb=Lb.objects.get(load_balancer_id=kwargs['load_balancer_id']),
+                    status=kwargs['status'],
+                    weight=kwargs['weight'],
+                    listen_ports=kwargs['listen_ports'],
+                    comment=kwargs['comment']
+                )
+                bs.save()
+                if isinstance(kwargs['vps_id_list'], str):
+                    a = Assets.objects.get(vps_id=kwargs['vps_id_list'])
+                    bs.server_id.add(a)
+                elif isinstance(kwargs['vps_id_list'], list):
+                    a = Assets.objects.filter(vps_id__in=kwargs['vps_id_list'])
+                    for obj in a:
+                        bs.server_id.add(obj)
+
         else:
              bs = Backend_Server(
                  lb=Lb.objects.get(load_balancer_id=kwargs['load_balancer_id']),
