@@ -37,6 +37,8 @@ class BackendServersUpdateSql(object):
         self.account = account
 
     def insert_sql(self, kwargs):
+        kwargs['vps_id_list'] = kwargs['vps_id_list'] if 'vps_id_list' in kwargs else None
+        kwargs['weight'] = kwargs['weight'] if 'weight' in kwargs else None
         if Backend_Server.objects.filter(lb__ip_address=kwargs['ip_address']):
             # 若SLB名称修改了，会删除数据库相关记录，重新创建一条记录
             # a_old = Assets.objects.filter(assets__comment=kwargs['comment'])
@@ -68,7 +70,7 @@ class BackendServersUpdateSql(object):
                 bs = Backend_Server(
                     lb=Lb.objects.get(load_balancer_id=kwargs['load_balancer_id']),
                     status=kwargs['status'],
-                    weight=kwargs['weight'],
+                    weight=kwargs['weight'] if 'weight' in kwargs else "null",
                     listen_ports=kwargs['listen_ports'],
                     comment=kwargs['comment']
                 )
@@ -190,6 +192,7 @@ class BackendServersView(LoginRequiredMixin, OrderableListMixin, ListView):
                     for loadBalancerId in lb_id_list:
                         instance.update_sql(loadBalancerId)
         except Exception as e:
+            raise e
             print(e)
 
 
