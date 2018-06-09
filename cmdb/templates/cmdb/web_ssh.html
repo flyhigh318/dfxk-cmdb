@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title> WebSSH </title>
+    <link href="/static/image/favicon.ico" rel="icon" type="image/png">
+    <link href="/static/hplus/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/hplus/css/xterm.min.css" rel="stylesheet" type="text/css"/>
+    <link href="/static/hplus/css/fullscreen.min.css" rel="stylesheet" type="text/css"/>
+    <style>
+      .row {
+        margin-top: 20px;
+        margin-bottom: 10px;
+      }
+
+      .container {
+        margin-top: 20px;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+{#      <form id="connect" action="" type="post" enctype="multipart/form-data">#}
+{#          {% csrf_token %}#}
+{#        <div class="row">#}
+{#          <div class="col">#}
+{#            <label for="Hostname">Hostname</label>#}
+{#            <input class="form-control" type="text" name="hostname" value={{ hostname }}>#}
+{#          </div>#}
+{#          <div class="col">#}
+{#            <label for="Port">Port</label>#}
+{#            <input class="form-control" type="text" name="port" value={{ port }}>#}
+{#          </div>#}
+{#        </div>#}
+{#        <div class="row">#}
+{#          <div class="col">#}
+{#            <label for="Username">Username</label>#}
+{#            <input class="form-control" type="text" name="username" value={{ username }}>#}
+{#          </div>#}
+{#          <div class="col">#}
+{#            <label for="Username">Private Key</label>#}
+{#            <input class="form-control" type="file" name="privatekey" value="">#}
+{#          </div>#}
+{#        </div>#}
+{#        <div class="row">#}
+{#          <div class="col">#}
+{#            <label for="Password">Password</label>#}
+{#            <input class="form-control" type="password" name="password" placeholder=""  value={{ password }}>#}
+{#          </div>#}
+{#          <div class="col">#}
+{#            If Private Key is chosen, password will be used to decrypt the Private Key if it is encrypted, otherwise used as the password of username.#}
+{#          </div>#}
+{#        </div>#}
+{#        <button id="connetct" type="submit" class="btn btn-primary">Connect</button>#}
+{#      </form>#}
+      <a href="http://localhost:8888/api?hostname={{ hostname }}&username={{ username }}&password={{ password }}&port={{ port }}" target="_blank"><li id="connet_a">连接</li></a>
+    </div>
+
+{#    <div class="container">#}
+{#      <div id="status" style="color: red;"></div>#}
+{#      <div id="terminal"></div>#}
+{#    </div>#}
+
+    <script src="/static/hplus/js/jquery.min.js"></script>
+{#    <script src="/static/hplus/js/popper.min.js"></script>#}
+{#    <script src="/static/hplus/js/bootstrap.min.js"></script>#}
+{#    <script src="/static/hplus/js/xterm.min.js"></script>#}
+{#    <script src="/static/hplus/js/fullscreen.min.js"></script>#}
+{#    <script src="/static/hplus/js/websshmain.js"></script>#}
+    <script>
+        $("#connet_a").trigger("click")
+    </script>
+  </body>
+</html>

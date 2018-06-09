@@ -162,8 +162,8 @@
                 <td id="create_time{{ o.id }}">{{ o.create_time }}</td>
                 <td id="update_time{{ o.id }}">{{ o.update_time }}</td>
                 <td>
-{#                    <a href="/frontend/cmdb/cdn_domain_list/{{ o.id }}/yun_account_details/"#}
-{#                           class="btn btn-xs btn-success"><i class="fa fa-expand"></i>详细</a>#}
+                    <a href="/frontend/cmdb/asset/web_ssh/?id={{ o.id }}&type=webssh"
+                           class="btn btn-xs btn-success"><i class="fa fa-expand"></i>连接</a>
                     <a href="{{ o.id }}/asset_edit/"
                        class="btn  btn-xs btn-info"><i class="fa fa-edit"></i>编辑</a>
                     {% if request.user.is_superuser %}

@@ -44,6 +44,7 @@ urlpatterns = [
         url(r'^(?P<pk>\d+)/asset_edit/', AssetUpdateView.as_view(), name='asset_edit'),
         url(r'^delete_entity/', AssetDeleteView.as_view(), name='asset_delete'),
         url(r'^server_info/', AssetServerInfoView.as_view(), name='asset_server_info'),
+        url(r'^web_ssh/', AssetServerWebSshView.as_view(), name='asset_server_web_ssh'),
         url(r'^info/', views.api_asset_server_info, name='asset_get_server'),
     ])),
 
