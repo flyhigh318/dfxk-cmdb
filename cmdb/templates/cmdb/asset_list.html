@@ -37,12 +37,12 @@
         <thead>
         <tr>
             <th><input id="checkall" type="checkbox" class="i-checks"></th>
-            <th>
-                <a class="order-by-column" data-column="vps_id" href="#">
-                    <i class="fa fa-sort order-by-column_icon"></i>
-                   实例ID
-                </a>
-            </th>
+{#            <th>#}
+{#                <a class="order-by-column" data-column="vps_id" href="#">#}
+{#                    <i class="fa fa-sort order-by-column_icon"></i>#}
+{#                   实例ID#}
+{#                </a>#}
+{#            </th>#}
             <th>
                 <a class="order-by-column" data-column="vps_name" href="#">
                     <i class="fa fa-sort order-by-column_icon"></i>
@@ -136,7 +136,7 @@
                 <td>
                     <input type="checkbox" class="i-checks icheck" id="{{ o.id }}" name="input[]">
                 </td>
-                <td id="name{{ o.id }}">{{ o.vps_id }}</td>
+{#                <td id="name{{ o.id }}">{{ o.vps_id }}</td>#}
                 <td id="name{{ o.id }}">{{ o.vps_name }}</td>
                 <td id="name{{ o.id }}"><a  href="/frontend/cmdb/asset/server_info/?id={{ o.id }}&type=search" >{{ o.intral_ip }}</a></td>
 {#                <td id="name{{ o.id }}"><a  href="#" onclick="get_intral_ip_info('{{ o.id }}')"#}
