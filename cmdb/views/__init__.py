@@ -12,3 +12,5 @@ from .DomainRecords import *
 from .Api import *
 from .AssetServerInfo import *
 from .AssetServerWebSsh import *
+from .DockerRegistry import *
+from .DockerTag import *

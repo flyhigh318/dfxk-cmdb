@@ -96,6 +96,23 @@ urlpatterns = [
         url(r'^delete_entity/', DomainRecordsDeleteView.as_view(), name='domain_record_delete'),
     ])),
 
+    # docker registry
+    url(r'^registry/', include([
+        url(r'^$', DockerRegistryView.as_view(), name='docker_registry_list'),
+        url(r'^registry_add/', DockerRegistryCreateView.as_view(), name='docker_registry_add'),
+        url(r'^sync_data/', DockerRegistrySyncView.as_view(), name='docker_registry_sync'),
+        url(r'^(?P<pk>\d+)/registry_edit/', DockerRegistryUpdateView.as_view(), name='docker_registry_edit'),
+        url(r'^delete_entity/', DockerRegistryDeleteView.as_view(), name='docker_registry_delete'),
+    ])),
+
+    # docker tag
+    url(r'^tag/', include([
+        url(r'^$', DockerTagView.as_view(), name='docker_tag_list'),
+        url(r'^tag_add/', DockerTagCreateView.as_view(), name='docker_tag_add'),
+        url(r'^(?P<pk>\d+)/tag_edit/', DockerTagUpdateView.as_view(), name='docker_tag_edit'),
+        url(r'^delete_entity/', DockerTagDeleteView.as_view(), name='docker_tag_delete'),
+    ])),
+
     # api
     url(r'^api/', include([
         url(r'^domain/records/info/', views.api_get_assets, name='api_get_assets'),

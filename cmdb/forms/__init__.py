@@ -9,3 +9,5 @@ from .LbForm import *
 from .BackendServersForm import *
 from .DomainsForm import *
 from .DomainRecordsForm import *
+from .DockerRegistryForm import *
+from .DockerTagForm import *

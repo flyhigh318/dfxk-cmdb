@@ -8,3 +8,4 @@ from .Password import *
 from .Website import *
 from .Slb import *
 from .Domain import *
+from .DockerRegistry import *
