@@ -36,6 +36,10 @@
                   html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">java服务进程列表</font></p><br>" +
                         "<pre>" + data.javaServers + "</pre><br>"
               }
+              if(data.container){
+                  html = html + "<p><font size=\"5\" face=\"arial\" color=\"black\">docker容器监控</font></p><br>" +
+                        "<pre>" + data.container + "</pre><br>"
+              }
               if(data.error){
                   document.getElementById("showtitle").innerHTML = "<h2>服务器：" + "</h2>"
                   html = "<p><font size=\"5\" face=\"arial\" color=\"black\">错误信息:</font></p><br>" +

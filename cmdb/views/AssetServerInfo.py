@@ -31,7 +31,8 @@ class AssetServerInfoView(View):
                                  "javaServers": "ps -ef | grep -Ei '(java|PPID)' |  grep -v grep",
                                  "load": "uptime",
                                  "ports": "netstat -tlunp",
-                                 "disk": "df -lh"
+                                 "disk": "df -lh",
+                                 "container": "docker stats --no-stream"
                               }
                     ret = AssetServersInfo(id).get_server_info(**cmd_dict)
                 else:
