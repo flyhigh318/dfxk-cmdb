@@ -113,6 +113,12 @@ urlpatterns = [
         url(r'^delete_entity/', DockerTagDeleteView.as_view(), name='docker_tag_delete'),
     ])),
 
+    # zhima
+    url(r'^zhima/', include([
+        url(r'^$', ZhimaCreditView.as_view(), name='docker_tag_list'),
+    ])),
+
+
     # api
     url(r'^api/', include([
         url(r'^domain/records/info/', views.api_get_assets, name='api_get_assets'),

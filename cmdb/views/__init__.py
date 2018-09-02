@@ -14,3 +14,4 @@ from .AssetServerInfo import *
 from .AssetServerWebSsh import *
 from .DockerRegistry import *
 from .DockerTag import *
+from .ZhimaCreditQuery import *
