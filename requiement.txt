@@ -4,14 +4,11 @@ anyjson==0.3.3
 appdirs==1.4.3
 arrow==0.10.0
 asn1crypto==0.24.0
-Babel==2.3.4
 backports-abc==0.5
 bcrypt==3.1.4
 better-exceptions==0.1.7
 billiard==3.3.0.23
 celery==3.1.25
-certifi==2016.9.26
-cffi==1.11.5
 click==6.7
 colorama==0.3.9
 coverage==4.4.1
